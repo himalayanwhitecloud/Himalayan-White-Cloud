@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login — Himalayan White Cloud Service</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Ensure hero image stays at the back */
+    .hero-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 0;  /* 👈 image at back */
+    }
+
+    /* Container for login form */
+    .login-container {
+      position: relative;
+      z-index: 2; /* 👈 bring form above image */
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(18px);
+      border-radius: 20px;
+      padding: 40px 32px;
+      width: min(420px, 90%);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+      text-align: center;
+      margin: 0 auto;
+    }
+
+    /* vertically center the form */
+    .hero {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-container h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .login-container p {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 24px;
+    }
+
+    .login-container input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.3);
+      margin-bottom: 14px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    .login-container input::placeholder {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      background: #fff;
+      color: #1c3ec9;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: transform 0.2s;
+    }
+
+    .login-container button:hover {
+      transform: translateY(-2px);
+    }
+
+    .login-container a {
+      color: #fff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container nav-wrapper">
+    <a href="index.html" class="brand" aria-label="Home">
+      <img src="img/1.jpg" alt="HWC Logo" class="logo">
+      <h2 class="brand-popup-title">Himalayan White Cloud Service</h2>
+    </a>
+    <nav>
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="services.html" class="nav-link">Services</a>
+      <a href="destinations.html" class="nav-link">Destinations</a>
+      <a href="elderly.html" class="nav-link">Elderly Care</a>
+      <a href="book.html" class="nav-link btn-primary">Book Consultation</a>
+      <a href="login.html" class="nav-link btn-primary" aria-current="page">Login</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero fullhero">
+  <img src="img/2.jpg" alt="Background" class="hero-img">
+
+  <div class="login-container">
+    <h1>Welcome Back</h1>
+    <p>Log in to continue your journey with Himalayan White Cloud.</p>
+
+
+        <form onsubmit="return handleLogin(event)">  
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+
+    <p style="margin-top:10px;">Forgot your password? <a href="#">Reset it</a></p>
+    <p>Don’t have an account? <a href="#">Sign up</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2025 Himalayan White Cloud Service — Made with care for people, not just paperwork.</p>
+  </div>
+</footer>
+
+<script>
+  async function handleLogin(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (!email || !password) {
+      alert("Please enter email and password.");
+      return false;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        alert(data.message || "Invalid email or password.");
+        return false;
+      }
+
+      // Save JWT token from backend
+      localStorage.setItem("token", data.token);
+
+      alert("Login successful!");
+      // Go to your portal/dashboard page
+      window.location.href = "portal.html";
+      return false;
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Please try again.");
+      return false;
+    }
+  }
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,913 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Client Workspace — Himalayan White Cloud Service</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Lightweight modal styles -->
+  <style>
+    .card-modal {
+      position: fixed;
+      inset: 0;
+      display: none;              /* toggled via JS */
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      font-family: inherit;
+    }
+    .card-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+    }
+    .card-modal-dialog {
+      position: relative;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 22px 22px 16px;
+      max-width: 520px;
+      width: 92%;
+      box-shadow: 0 22px 80px rgba(0, 0, 0, 0.45);
+      z-index: 1;
+    }
+    .card-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .card-modal-header h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    .card-modal-header button {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .card-modal-body label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 10px;
+      margin-bottom: 4px;
+      color: #333;
+    }
+    .card-modal-body input,
+    .card-modal-body textarea {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 8px;
+      border: 1px solid #ccd3e1;
+      font-size: 0.9rem;
+      box-sizing: border-box;
+    }
+    .card-modal-body textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .card-modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .card-modal-footer button {
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+    }
+    .card-btn-secondary {
+      background: #f2f3f7;
+      color: #333;
+    }
+    .card-btn-primary {
+      background: #1c3ec9;
+      color: #fff;
+    }
+
+    /* ensure empty columns are droppable */
+    .kanban-list {
+      min-height: 120px;
+    }
+  </style>
+</head>
+<body class="portal-body">
+
+<header class="navbar">
+  <div class="container nav-wrapper">
+    <a href="index.html" class="brand" aria-label="Home">
+      <img src="img/1.jpg" alt="HWC Logo" class="logo">
+      <h2 class="brand-popup-title">Himalayan White Cloud Service</h2>
+    </a>
+
+    <nav>
+      <span id="userEmail" class="nav-user-pill"></span>
+      <button id="logoutBtn" class="btn-ghost" type="button">Logout</button>
+    </nav>
+  </div>
+</header>
+
+<main class="portal-wrapper">
+  <div class="container dashboard-layout">
+    <!-- SIDEBAR -->
+    <aside class="portal-sidebar">
+      <ul class="portal-menu" id="workspaceMenu">
+        <li class="active" data-view="lead">Lead</li>
+        <li data-view="agreement">Agreement</li>
+        <li data-view="invoice">Invoice</li>
+        <li data-view="client">Client</li>
+      </ul>
+
+      <div class="portal-sidebar-footer">
+        <p>Next action</p>
+        <strong>Upload missing documents</strong>
+      </div>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <section class="dashboard-main">
+
+      <!-- PANEL: LEAD -->
+      <div class="workspace-panel" data-view="lead">
+        <div class="lead-panel-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div>
+            <h2>Leads</h2>
+            <p style="font-size:0.9rem;opacity:0.8;">Create your own stages (tabs) and they’ll be saved for next time.</p>
+          </div>
+          <button id="addLeadStageBtn" class="btn-secondary" type="button">+ Add stage</button>
+        </div>
+
+        <!-- filters just for lead panel -->
+        <div class="dashboard-filters">
+          <input id="taskSearch" type="search" placeholder="Search leads or notes…">
+        </div>
+
+        <!-- Dynamic board: columns will be created by JS -->
+        <div class="kanban-layout full-width">
+          <div class="kanban-board" id="leadBoard"></div>
+        </div>
+      </div>
+
+      <!-- PANEL: AGREEMENT -->
+      <div class="workspace-panel" data-view="agreement" style="display:none;">
+        <div class="lead-panel-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div>
+            <h2>Agreements</h2>
+            <p style="font-size:0.9rem;opacity:0.8;">Create your own agreement stages and they’ll be saved for next time.</p>
+          </div>
+          <button id="addAgreementStageBtn" class="btn-secondary" type="button">+ Add stage</button>
+        </div>
+
+        <div class="kanban-layout full-width">
+          <div class="kanban-board" id="agreementBoard"></div>
+        </div>
+      </div>
+
+      <!-- PANEL: INVOICE -->
+      <div class="workspace-panel" data-view="invoice" style="display:none;">
+        <div class="lead-panel-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div>
+            <h2>Invoices</h2>
+            <p style="font-size:0.9rem;opacity:0.8;">Custom invoice stages (e.g. Draft, Sent, Paid) stored for next time.</p>
+          </div>
+          <button id="addInvoiceStageBtn" class="btn-secondary" type="button">+ Add stage</button>
+        </div>
+
+        <div class="kanban-layout full-width">
+          <div class="kanban-board" id="invoiceBoard"></div>
+        </div>
+      </div>
+
+      <!-- PANEL: CLIENT -->
+      <div class="workspace-panel" data-view="client" style="display:none;">
+        <div class="lead-panel-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div>
+            <h2>Client details</h2>
+            <p style="font-size:0.9rem;opacity:0.8;">Organise client stages like Profile, Onboarding, Active, Closed.</p>
+          </div>
+          <button id="addClientStageBtn" class="btn-secondary" type="button">+ Add stage</button>
+        </div>
+
+        <div class="kanban-layout full-width">
+          <div class="kanban-board" id="clientBoard"></div>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>© 2025 Himalayan White Cloud Service — Secure client workspace.</p>
+  </div>
+</footer>
+
+<!-- CARD MODAL -->
+<div id="cardModal" class="card-modal">
+  <div id="cardModalBackdrop" class="card-modal-backdrop"></div>
+  <div class="card-modal-dialog">
+    <form id="cardForm">
+      <div class="card-modal-header">
+        <h2 id="cardModalTitle">New entry</h2>
+        <button type="button" id="cardCloseIcon" aria-label="Close">✕</button>
+      </div>
+      <div class="card-modal-body">
+        <label for="cardName">Name</label>
+        <input id="cardName" type="text" required placeholder="Lead or client name">
+
+        <label for="cardEmail">Email</label>
+        <input id="cardEmail" type="email" placeholder="name@example.com">
+
+        <label for="cardNotes">Notes</label>
+        <textarea id="cardNotes" placeholder="Notes, context, next steps…"></textarea>
+      </div>
+      <div class="card-modal-footer">
+        <button type="button" id="cardCancelBtn" class="card-btn-secondary">Cancel</button>
+        <button type="submit" id="cardSaveBtn" class="card-btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  let draggedCard = null;
+  let currentView = "lead"; // default tab
+  let currentSearch = "";
+  let modalState = { view: null, stageIndex: null, cardIndex: null };
+
+  // localStorage keys for each pipeline
+  const LEAD_STAGES_KEY      = "hwc_lead_stages";
+  const AGREEMENT_STAGES_KEY = "hwc_agreement_stages";
+  const INVOICE_STAGES_KEY   = "hwc_invoice_stages";
+  const CLIENT_STAGES_KEY    = "hwc_client_stages";
+
+  const LEAD_CARDS_KEY       = "hwc_lead_cards";
+  const AGREEMENT_CARDS_KEY  = "hwc_agreement_cards";
+  const INVOICE_CARDS_KEY    = "hwc_invoice_cards";
+  const CLIENT_CARDS_KEY     = "hwc_client_cards";
+
+  const BOARD_IDS = {
+    lead: "leadBoard",
+    agreement: "agreementBoard",
+    invoice: "invoiceBoard",
+    client: "clientBoard"
+  };
+
+  // ---------------- AUTH + INITIAL LOAD ----------------
+  async function loadProfile() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/profile", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+
+      if (!res.ok) throw new Error("Invalid token");
+
+      const data = await res.json();
+      const emailEl = document.getElementById("userEmail");
+      if (emailEl && data.email) emailEl.textContent = data.email;
+
+      initDragAndDrop();
+      initMenu();
+      initSearch();
+      initCardModal();
+
+      initLeadStages();
+      initAgreementStages();
+      initInvoiceStages();
+      initClientStages();
+
+      updatePanels();
+    } catch (err) {
+      console.error(err);
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    }
+  }
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+  });
+
+  // ---------------- STAGE & CARD STORAGE ----------------
+
+  function getStageKey(view) {
+    switch (view) {
+      case "lead":      return LEAD_STAGES_KEY;
+      case "agreement": return AGREEMENT_STAGES_KEY;
+      case "invoice":   return INVOICE_STAGES_KEY;
+      case "client":    return CLIENT_STAGES_KEY;
+      default:          return null;
+    }
+  }
+
+  function getCardKey(view) {
+    switch (view) {
+      case "lead":      return LEAD_CARDS_KEY;
+      case "agreement": return AGREEMENT_CARDS_KEY;
+      case "invoice":   return INVOICE_CARDS_KEY;
+      case "client":    return CLIENT_CARDS_KEY;
+      default:          return null;
+    }
+  }
+
+  function defaultStagesFor(view) {
+    switch (view) {
+      case "lead":      return ["New lead", "Contacted", "Qualified", "Closed"];
+      case "agreement": return ["Draft", "Sent to client", "Signed"];
+      case "invoice":   return ["Draft", "Sent", "Paid"];
+      case "client":    return ["Profile", "Notes", "History"];
+      default:          return [];
+    }
+  }
+
+  function getStages(view) {
+    try {
+      const key = getStageKey(view);
+      if (!key) return [];
+      const defaults = defaultStagesFor(view);
+
+      const raw = localStorage.getItem(key);
+      if (!raw) return defaults;
+
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+      return defaults;
+    } catch (e) {
+      console.error("Error reading stages for view:", view, e);
+      return defaultStagesFor(view);
+    }
+  }
+
+  function saveStages(view, stages) {
+    const key = getStageKey(view);
+    if (!key) return;
+    localStorage.setItem(key, JSON.stringify(stages));
+  }
+
+  // cards: array-of-arrays aligned with stages: cards[stageIndex] = [{id,name,email,notes}, ...]
+  function getCards(view) {
+    const key = getCardKey(view);
+    if (!key) return [];
+    const stageCount = getStages(view).length;
+
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) {
+        return Array.from({ length: stageCount }, () => []);
+      }
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) {
+        return Array.from({ length: stageCount }, () => []);
+      }
+
+      const cards = [];
+      for (let i = 0; i < stageCount; i++) {
+        if (Array.isArray(parsed[i])) {
+          // normalise old shape to new {name,email,notes}
+          cards[i] = parsed[i].map(normalizeCardData);
+        } else {
+          cards[i] = [];
+        }
+      }
+      return cards;
+    } catch (e) {
+      console.error("Error reading cards for view:", view, e);
+      return Array.from({ length: stageCount }, () => []);
+    }
+  }
+
+  function saveCards(view, cards) {
+    const key = getCardKey(view);
+    if (!key) return;
+    localStorage.setItem(key, JSON.stringify(cards));
+  }
+
+  function normalizeCardData(raw) {
+    if (!raw) return { id: Date.now(), name: "", email: "", notes: "" };
+    if (raw.name || raw.email || raw.notes) {
+      return {
+        id: raw.id || Date.now(),
+        name: raw.name || "",
+        email: raw.email || "",
+        notes: raw.notes || ""
+      };
+    }
+    // legacy {title, desc}
+    return {
+      id: raw.id || Date.now(),
+      name: raw.title || "",
+      email: "",
+      notes: raw.desc || ""
+    };
+  }
+
+  // ---------------- CARD MODAL ----------------
+
+  function initCardModal() {
+    const modal = document.getElementById("cardModal");
+    if (!modal) return;
+
+    const form = document.getElementById("cardForm");
+    const cancelBtn = document.getElementById("cardCancelBtn");
+    const closeIcon = document.getElementById("cardCloseIcon");
+    const backdrop = document.getElementById("cardModalBackdrop");
+
+    form.addEventListener("submit", handleCardFormSubmit);
+    cancelBtn.addEventListener("click", closeCardModal);
+    closeIcon.addEventListener("click", closeCardModal);
+    backdrop.addEventListener("click", closeCardModal);
+  }
+
+  function openCardModal(view, stageIndex, cardIndex) {
+    modalState = { view, stageIndex, cardIndex };
+    const modal = document.getElementById("cardModal");
+    const titleEl = document.getElementById("cardModalTitle");
+    const nameInput = document.getElementById("cardName");
+    const emailInput = document.getElementById("cardEmail");
+    const notesInput = document.getElementById("cardNotes");
+
+    const stages = getStages(view);
+    const cards = getCards(view);
+    const existing = (cardIndex != null && cards[stageIndex] && cards[stageIndex][cardIndex])
+      ? cards[stageIndex][cardIndex]
+      : null;
+    const card = existing ? normalizeCardData(existing) : null;
+
+    titleEl.textContent = (card ? "Edit entry – " : "New entry – ") + (stages[stageIndex] || "");
+    nameInput.value = card ? (card.name || "") : "";
+    emailInput.value = card ? (card.email || "") : "";
+    notesInput.value = card ? (card.notes || "") : "";
+
+    modal.style.display = "flex";
+  }
+
+  function closeCardModal() {
+    const modal = document.getElementById("cardModal");
+    if (modal) modal.style.display = "none";
+    modalState = { view: null, stageIndex: null, cardIndex: null };
+  }
+
+  function handleCardFormSubmit(e) {
+    e.preventDefault();
+    const { view, stageIndex, cardIndex } = modalState;
+    if (view == null || stageIndex == null) {
+      closeCardModal();
+      return;
+    }
+    const name  = document.getElementById("cardName").value.trim();
+    const email = document.getElementById("cardEmail").value.trim();
+    const notes = document.getElementById("cardNotes").value.trim();
+
+    if (!name) {
+      alert("Name is required.");
+      return;
+    }
+
+    const cards = getCards(view);
+    if (!Array.isArray(cards[stageIndex])) cards[stageIndex] = [];
+
+    if (cardIndex == null) {
+      cards[stageIndex].push({
+        id: Date.now(),
+        name,
+        email,
+        notes
+      });
+    } else {
+      const existing = cards[stageIndex][cardIndex] || {};
+      cards[stageIndex][cardIndex] = {
+        id: existing.id || Date.now(),
+        name,
+        email,
+        notes
+      };
+    }
+
+    saveCards(view, cards);
+    renderBoard(view, BOARD_IDS[view]);
+    closeCardModal();
+    applyAllFilters();
+  }
+
+  // ---------------- BOARD RENDERING ----------------
+
+  function createCardElement(card, view, stageIndex, cardIndex) {
+    const data = normalizeCardData(card);
+    const el = document.createElement("article");
+    el.className = "kanban-card";
+    el.draggable = true;
+
+    el.dataset.id = data.id || "";
+    el.dataset.email = data.email || "";
+    el.dataset.notes = data.notes || "";
+    el.dataset.view = view;
+    el.dataset.stageIndex = stageIndex;
+    el.dataset.cardIndex = cardIndex;
+
+    el.innerHTML = `
+  <div class="card-header">
+    <h3>${data.name || "(no name)"}</h3>
+    <span class="drag-handle" title="Drag">⠿</span>
+  </div>
+  ${data.email ? `<p>${data.email}</p>` : ""}
+  ${data.notes ? `<p style="font-size:0.8rem;opacity:0.8;">${data.notes}</p>` : ""}
+`;
+
+
+    setupCardDragHandlers(el);
+
+    el.addEventListener("click", (evt) => {
+      // avoid opening on drag
+      if (el.classList.contains("dragging")) return;
+      openCardModal(view, stageIndex, cardIndex);
+    });
+
+    return el;
+  }
+
+  function renderBoard(view, boardId) {
+    const board = document.getElementById(boardId);
+    if (!board) return;
+
+    const stages = getStages(view);
+    const cardsByStage = getCards(view);
+
+    board.innerHTML = "";
+
+    stages.forEach((stageName, stageIndex) => {
+      const colId = `${view}_stage_${stageIndex}`;
+      const stageCards = cardsByStage[stageIndex] || [];
+
+      const columnEl = document.createElement("div");
+      columnEl.className = "kanban-column";
+      columnEl.dataset.stageIndex = stageIndex;
+
+      columnEl.innerHTML = `
+        <div class="kanban-column-header" style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+          <h2 class="stage-title" data-view="${view}" data-index="${stageIndex}" style="margin:0;font-size:1rem;">
+            ${stageName}
+          </h2>
+          <div class="stage-actions" style="display:flex;gap:4px;align-items:center;">
+            <button
+              type="button"
+              class="stage-btn stage-add-card"
+              data-view="${view}"
+              data-column="${colId}"
+              data-stage-index="${stageIndex}"
+              style="border:none;background:transparent;cursor:pointer;font-size:1rem;"
+              title="Create item in this stage"
+            >
+              ➕
+            </button>
+            <button
+              type="button"
+              class="stage-btn stage-edit"
+              data-view="${view}"
+              data-index="${stageIndex}"
+              style="border:none;background:transparent;cursor:pointer;font-size:0.9rem;"
+              title="Edit stage name"
+            >
+              ✏️
+            </button>
+            <button
+              type="button"
+              class="stage-btn stage-delete"
+              data-view="${view}"
+              data-index="${stageIndex}"
+              style="border:none;background:transparent;cursor:pointer;font-size:0.9rem;"
+              title="Delete stage"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+        <div class="kanban-list" id="${colId}" data-column="${colId}" style="min-height:120px;"></div>
+      `;
+
+      board.appendChild(columnEl);
+
+      const listEl = columnEl.querySelector(".kanban-list");
+      stageCards.forEach((cardData, cardIndex) => {
+        const cardEl = createCardElement(cardData, view, stageIndex, cardIndex);
+        listEl.appendChild(cardEl);
+      });
+    });
+
+    attachStageActionHandlers(board, view, boardId);
+
+    board.querySelectorAll(".kanban-list").forEach(setupListDropHandlers);
+    board.querySelectorAll(".kanban-card").forEach(setupCardDragHandlers);
+  }
+
+  function syncCardsFromDOM(view) {
+    const boardId = BOARD_IDS[view];
+    if (!boardId) return;
+    const board = document.getElementById(boardId);
+    if (!board) return;
+
+    const columns = board.querySelectorAll(".kanban-column");
+    const cardsByStage = [];
+
+    columns.forEach(colEl => {
+      const list = colEl.querySelector(".kanban-list");
+      const colCards = [];
+      if (list) {
+        list.querySelectorAll(".kanban-card").forEach(cardEl => {
+          const h = cardEl.querySelector("h3");
+          const name = h ? h.innerText.trim() : "";
+          const email = cardEl.dataset.email || "";
+          const notes = cardEl.dataset.notes || "";
+          const id    = cardEl.dataset.id ? Number(cardEl.dataset.id) : Date.now();
+          colCards.push({ id, name, email, notes });
+        });
+      }
+      cardsByStage.push(colCards);
+    });
+
+    saveCards(view, cardsByStage);
+  }
+
+  function attachStageActionHandlers(board, view, boardId) {
+    // ADD CARD (➕ icon)
+    board.querySelectorAll(".stage-add-card").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const stageIndex = parseInt(btn.dataset.stageIndex, 10);
+        openCardModal(view, stageIndex, null);
+      });
+    });
+
+    // EDIT STAGE NAME
+    board.querySelectorAll(".stage-edit").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const index = parseInt(btn.dataset.index, 10);
+        const stages = getStages(view);
+        const current = stages[index] || "";
+        const next = prompt("Rename stage", current);
+        if (!next || !next.trim()) return;
+
+        stages[index] = next.trim();
+        saveStages(view, stages);
+        renderBoard(view, boardId);
+      });
+    });
+
+    // DELETE STAGE
+    board.querySelectorAll(".stage-delete").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const index = parseInt(btn.dataset.index, 10);
+        const stages = getStages(view);
+
+        if (stages.length <= 1) {
+          alert("You must have at least one stage.");
+          return;
+        }
+
+        const stageName = stages[index] || "this stage";
+        const ok = confirm(`Delete "${stageName}"? This will remove the whole column and its cards.`);
+        if (!ok) return;
+
+        stages.splice(index, 1);
+        saveStages(view, stages);
+
+        const cards = getCards(view);
+        cards.splice(index, 1);
+        saveCards(view, cards);
+
+        renderBoard(view, boardId);
+      });
+    });
+  }
+
+  function addStage(view, boardId, label) {
+    const stages = getStages(view);
+    const name = prompt(label || "Name of new stage", "New stage");
+    if (!name || !name.trim()) return;
+
+    stages.push(name.trim());
+    saveStages(view, stages);
+
+    const cards = getCards(view);
+    cards.push([]);
+    saveCards(view, cards);
+
+    renderBoard(view, boardId);
+  }
+
+  function initLeadStages() {
+    renderBoard("lead", "leadBoard");
+    const btn = document.getElementById("addLeadStageBtn");
+    if (btn) {
+      btn.addEventListener("click", () =>
+        addStage("lead", "leadBoard", "Name of new lead stage")
+      );
+    }
+  }
+
+  function initAgreementStages() {
+    renderBoard("agreement", "agreementBoard");
+    const btn = document.getElementById("addAgreementStageBtn");
+    if (btn) {
+      btn.addEventListener("click", () =>
+        addStage("agreement", "agreementBoard", "Name of new agreement stage")
+      );
+    }
+  }
+
+  function initInvoiceStages() {
+    renderBoard("invoice", "invoiceBoard");
+    const btn = document.getElementById("addInvoiceStageBtn");
+    if (btn) {
+      btn.addEventListener("click", () =>
+        addStage("invoice", "invoiceBoard", "Name of new invoice stage")
+      );
+    }
+  }
+
+  function initClientStages() {
+    renderBoard("client", "clientBoard");
+    const btn = document.getElementById("addClientStageBtn");
+    if (btn) {
+      btn.addEventListener("click", () =>
+        addStage("client", "clientBoard", "Name of new client stage")
+      );
+    }
+  }
+
+  // ---------------- WORKSPACE MENU & PANELS ----------------
+
+  function initMenu() {
+    const menu = document.getElementById("workspaceMenu");
+    if (!menu) return;
+
+    const items = menu.querySelectorAll("li");
+    items.forEach(item => {
+      item.addEventListener("click", () => {
+        items.forEach(i => i.classList.remove("active"));
+        item.classList.add("active");
+        currentView = item.dataset.view || "lead";
+        updatePanels();
+      });
+    });
+  }
+
+  function updatePanels() {
+    const panels = document.querySelectorAll(".workspace-panel");
+    panels.forEach(panel => {
+      const view = panel.dataset.view;
+      panel.style.display = (view === currentView) ? "" : "none";
+    });
+
+    applyAllFilters();
+  }
+
+  // ---------------- SEARCH / FILTER ----------------
+
+  function initSearch() {
+    const searchInput = document.getElementById("taskSearch");
+    if (searchInput) {
+      searchInput.addEventListener("input", e => {
+        currentSearch = e.target.value || "";
+        applyAllFilters();
+      });
+    }
+  }
+
+  function applyAllFilters() {
+    const term = currentSearch.toLowerCase();
+    const activePanel = document.querySelector(`.workspace-panel[data-view="${currentView}"]`);
+    if (!activePanel) return;
+
+    activePanel.querySelectorAll(".kanban-card").forEach(card => {
+      const text = card.innerText.toLowerCase();
+      const visibleBySearch = !term || text.includes(term);
+      card.style.display = visibleBySearch ? "" : "none";
+    });
+  }
+
+  // ---------------- DRAG & DROP (for cards) ----------------
+
+  function setupCardDragHandlers(card) {
+  if (card.dataset.dragInit === "true") return;
+
+  const handle = card.querySelector(".drag-handle");
+
+  // Make card draggable only when drag-handle is used
+  handle.addEventListener("mousedown", () => {
+    card.draggable = true;
+  });
+
+  // As soon as mouse leaves after drag – disable drag
+  card.addEventListener("dragend", () => {
+    card.draggable = false;
+    card.classList.remove("dragging");
+    draggedCard = null;
+    document.querySelectorAll(".kanban-list.drag-over")
+      .forEach(l => l.classList.remove("drag-over"));
+    syncCardsFromDOM(currentView);
+  });
+
+  // Drag start
+  card.addEventListener("dragstart", (e) => {
+    draggedCard = card;
+    card.classList.add("dragging");
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", "");
+  });
+
+  card.dataset.dragInit = "true";
+}
+
+
+  function setupListDropHandlers(list) {
+    if (list.dataset.dropInit === "true") return;
+    list.addEventListener("dragover", handleDragOver);
+    list.addEventListener("drop", handleDrop);
+    list.addEventListener("dragleave", handleDragLeave);
+    list.dataset.dropInit = "true";
+  }
+
+  function initDragAndDrop() {
+    document.querySelectorAll(".kanban-card").forEach(setupCardDragHandlers);
+    document.querySelectorAll(".kanban-list").forEach(setupListDropHandlers);
+  }
+
+  function handleDragStart(e) {
+    draggedCard = this;
+    this.classList.add("dragging");
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", "");
+  }
+
+  function handleDragEnd() {
+    this.classList.remove("dragging");
+    draggedCard = null;
+    document.querySelectorAll(".kanban-list.drag-over")
+      .forEach(l => l.classList.remove("drag-over"));
+    syncCardsFromDOM(currentView);
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    const list = this;
+    list.classList.add("drag-over");
+
+    const afterElement = getDragAfterElement(list, e.clientY);
+    if (!afterElement) {
+      list.appendChild(draggedCard);
+    } else {
+      list.insertBefore(draggedCard, afterElement);
+    }
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    this.classList.remove("drag-over");
+    syncCardsFromDOM(currentView);
+  }
+
+  function handleDragLeave(e) {
+    if (!this.contains(e.relatedTarget)) {
+      this.classList.remove("drag-over");
+    }
+  }
+
+  function getDragAfterElement(container, y) {
+    const cards = [...container.querySelectorAll(".kanban-card:not(.dragging)")];
+
+    return cards.reduce(
+      (closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      },
+      { offset: Number.NEGATIVE_INFINITY, element: null }
+    ).element;
+  }
+
+  // ---------------- STARTUP ----------------
+  window.addEventListener("DOMContentLoaded", loadProfile);
+</script>
+
+</body>
+</html>

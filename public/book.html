@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Book Consultation — Himalayan White Cloud Service</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container nav-wrapper">
+    <a href="index.html" aria-label="Home">
+      <img src="img/1.jpg" alt="HWC Logo" class="logo">
+    </a>
+
+    <nav>
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="services.html" class="nav-link">Services</a>
+      <a href="destinations.html" class="nav-link">Destinations</a>
+      <a href="elderly.html" class="nav-link">Elderly Care</a>
+      <a href="book.html" class="nav-link btn-primary">Book Consultation</a>
+      <a href="login.html" class="nav-link btn-primary">Login</a>
+    </nav>
+  </div>
+</header>
+
+
+<main class="section">
+  <div class="container">
+    <h1 class="section-title">Book Consultation</h1>
+
+    <p class="reveal centered-text">
+  Select a free 20-minute slot and provide a few details so we can prepare. 
+  This temporary form is front-end only and demonstrates the flow.
+</p>
+
+   <form class="card booking-form" onsubmit="handleBooking(event)">
+  <div class="form-row">
+    <div class="form-group">
+      <label for="bk-name">Full name</label>
+      <input id="bk-name" type="text" required>
+    </div>
+    <div class="form-group">
+      <label for="bk-phone">Phone Number</label>
+      <input id="bk-phone" type="tel" required>
+    </div>
+    <div class="form-group">
+      <label for="bk-email">Email</label>
+      <input id="bk-email" type="email" required>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="bk-service">Service</label>
+      <select id="bk-service">
+        <option>Education Consulting</option>
+        <option>Immigration / Visas</option>
+        <option>Elderly Care</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="bk-date">Date</label>
+      <input id="bk-date" type="date" required>
+    </div>
+    <div class="form-group">
+      <label for="bk-time">Time</label>
+      <input id="bk-time" type="time" required>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="bk-notes">Notes</label>
+      <textarea id="bk-notes" rows="4"></textarea>
+    </div>
+  </div>
+
+  <div class="form-row form-actions">
+    <button type="submit" class="btn-primary">Book a slot</button>
+  </div>
+
+    <p style="text-align:center; margin-top:12px;">Want form submission.</p>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>© 2025 Himalayan White Cloud Service</p>
+  </div>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/reveal.js"></script>
+<script>
+  async function handleBooking(event) {
+    event.preventDefault();
+
+    const fullName = document.getElementById("bk-name").value.trim();
+    const phone    = document.getElementById("bk-phone").value.trim();
+    const email    = document.getElementById("bk-email").value.trim();
+    const service  = document.getElementById("bk-service").value;
+    const date     = document.getElementById("bk-date").value;
+    const time     = document.getElementById("bk-time").value;
+    const notes    = document.getElementById("bk-notes").value.trim();
+
+    try {
+      const res = await fetch("/api/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, phone, email, service, date, time, notes })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        alert(data.message || "Sorry, something went wrong. Please try again.");
+        return;
+      }
+
+      alert("Thank you! Your booking request has been received. We’ll confirm your slot by email/phone.");
+      event.target.reset();
+    } catch (err) {
+      console.error(err);
+      alert("Server error. Please check that your backend is running.");
+    }
+  }
+</script>
+
+</body>
+</html>

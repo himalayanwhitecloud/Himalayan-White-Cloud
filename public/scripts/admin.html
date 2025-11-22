@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin — Bookings | Himalayan White Cloud</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="portal-body">
+
+<header class="navbar">
+  <div class="container nav-wrapper">
+    <a href="index.html" aria-label="Home">
+      <img src="img/1.jpg" alt="HWC Logo" class="logo">
+    </a>
+    <nav>
+      <span id="adminEmail" class="nav-user-pill"></span>
+      <button id="logoutBtn" class="btn-ghost">Logout</button>
+    </nav>
+  </div>
+</header>
+
+<main class="section" style="padding-top:100px;">
+  <div class="container">
+    <h1 class="section-title">Booking Requests</h1>
+    <p class="centered-text">All consultation bookings submitted from the website.</p>
+
+    <div class="card" style="padding:16px; overflow-x:auto;">
+      <table id="bookingsTable" class="admin-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Submitted</th>
+            <th>Full name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- rows injected by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>© 2025 Himalayan White Cloud Service — Admin portal.</p>
+  </div>
+</footer>
+
+<script>
+  async function loadBookings() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    try {
+      // get admin email
+      const profileRes = await fetch("/api/profile", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      if (!profileRes.ok) throw new Error("Profile error");
+      const profile = await profileRes.json();
+      document.getElementById("adminEmail").textContent = profile.email;
+
+      // fetch bookings
+      const res = await fetch("/api/bookings", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || "Not authorized to view bookings.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      const data = await res.json();
+      const rows = data.bookings || [];
+      const tbody = document.querySelector("#bookingsTable tbody");
+      tbody.innerHTML = "";
+
+      rows.forEach((b, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${new Date(b.createdAt).toLocaleString()}</td>
+          <td>${b.fullName}</td>
+          <td>${b.phone}</td>
+          <td>${b.email}</td>
+          <td>${b.service}</td>
+          <td>${b.date}</td>
+          <td>${b.time}</td>
+          <td>${b.notes || ""}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      if (rows.length === 0) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="9" style="text-align:center; padding:10px;">No bookings yet.</td>`;
+        tbody.appendChild(tr);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error loading bookings.");
+      window.location.href = "login.html";
+    }
+  }
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+  });
+
+  window.addEventListener("DOMContentLoaded", loadBookings);
+</script>
+
+</body>
+</html>

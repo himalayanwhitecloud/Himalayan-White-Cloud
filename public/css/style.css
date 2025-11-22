@@ -1,0 +1,926 @@
+/* css/style.css
+   Glass theme — robust layout + responsive fixes
+*/
+
+/* RESET */
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+html, body { height: 100%; }
+body {
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  
+  /* NEW GRADIENT BACKGROUND */
+  background: linear-gradient(120deg, #042d4b 20%, #04395E 40%, #023c90 100%);
+  background-attachment: fixed;
+  
+  color: #fff;
+  line-height: 1.6;
+  padding-top: 76px;
+  background-image:
+  radial-gradient(circle at 25% 20%, rgba(255,255,255,0.10) 0%, transparent 40%),
+  linear-gradient(120deg, #043253 20%, #04395E 40%, #023c90 100%);
+
+}
+
+
+/* CONTAINER (original centered width) */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* NAVBAR - fixed glass */
+.navbar {
+  position: fixed;
+  inset: 0 auto auto 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1100;
+  height: 86px;
+  display: flex;
+  align-items: center;
+  backdrop-filter: blur(10px) saturate(130%);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+/* nav wrapper: keep nav items on one row */
+.nav-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: 100%;
+}
+
+/* LOGO - constrain size (prevents huge logos) */
+.logo {
+  height: 52px;         /* fixed height */
+  width: auto;
+  object-fit: contain;
+  display: block;
+  margin-right: 8px;
+  border-radius: 8px;
+}
+
+/* BRAND (Logo + name text) */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.brand-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/* --- BRAND POPUP TITLE ANIMATION --- */
+.brand-popup-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff !important;        /* ✅ FIXED — always white */
+  opacity: 0;
+  transform: translateX(-60px);
+  animation: slideInLeft 0.8s ease-out forwards;
+}
+
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive — shrink text on smaller screens */
+@media (max-width: 900px) {
+  .brand-text {
+    font-size: 14px;
+  }
+}
+
+/* NAV LINKS */
+nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* base nav-link */
+.nav-link {
+  position: relative;
+  color: rgba(255,255,255,0.95);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 8px;
+  transition: transform .12s ease, color .18s ease, background .18s ease;
+}
+
+/* underline animation */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #fff, #E7F1FF);
+  border-radius: 999px;
+  transform: translateX(-50%);
+  transition: width .28s cubic-bezier(.2,.9,.2,1);
+}
+.nav-link:hover::after,
+.nav-link:focus::after { width: 72%; }
+
+/* active state (visible even without hover) */
+.nav-link.active,
+.nav-link[aria-current="page"] {
+  color: #ffffff;
+  font-weight: 700;
+}
+.nav-link.active::after,
+.nav-link[aria-current="page"]::after {
+  width: 100%;
+}
+
+/* CTA button style (white on blue) */
+.btn-primary {
+  background: #ffffff;
+  color: #1c3ec9 !important;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(2,43,160,0.12);
+  border: none;
+}
+.btn-primary:hover { transform: translateY(-3px); }
+
+/* GHOST button */
+.btn-ghost {
+  background: transparent;
+  color: rgba(255,255,255,0.95);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 10px 16px;
+  border-radius: 10px;
+}
+
+/* HERO CONTAINER */
+.hero {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;      /* <— centers vertically */
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+/* Portrait hero image */
+.hero-img {
+  height: 50vh;
+  width: auto;
+  max-width: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Center the hero glass card */
+.hero-glass {
+  position: absolute;        /* <— sits ON TOP of the image */
+  bottom: 3vh;               /* adjust how high above bottom */
+  left: auto;
+  transform: translateX(-50%); /* <— centers horizontally */
+  width: min(900px, 55%);
+  background: rgba(255,255,255,0.10);
+  backdrop-filter: blur(14px);
+  border-radius: 24px;
+  padding: 32px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.25);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.25);
+}
+
+.hero-glass h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 3.6vw, 2.4rem);
+  margin-bottom: 8px;
+  color: #fff;
+}
+.hero-glass p { color: rgba(255,255,255,0.92); }
+
+/* SECTION TITLES */
+.section {
+  padding: 48px 0;
+}
+.section-title {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 2.6vw, 2.25rem);
+  color: #fff;
+  margin-bottom: 20px;
+}
+.section-title::after {
+  content: "";
+  width: 64px;
+  height: 4px;
+  display: block;
+  margin: 12px auto 0;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.85);
+  opacity: .9;
+}
+
+/* GRID & CARDS */
+.grid {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+  align-items: start;
+}
+
+.card {
+  background: rgba(255,255,255,0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: transform .28s ease, box-shadow .28s ease;
+  padding-bottom: 12px;
+}
+.card:hover { transform: translateY(-8px); box-shadow: 0 18px 50px rgba(2,43,160,0.14); }
+
+.card img { width:100%; height:200px; object-fit:cover; display:block; border-bottom-left-radius: 0; border-bottom-right-radius:0; }
+.card h3 { font-size:1.05rem; margin:14px; color: #fff; }
+.card p { margin: 0 14px 14px; color: rgba(255,255,255,0.9); }
+
+/* FORM CARD styles (book page) */
+form.card { padding: 18px; max-width: 640px; margin: 0 auto; }
+
+/* FOOTER */
+footer {
+  padding: 36px 0;
+  margin-top: 44px;
+  text-align: center;
+  color: rgba(255,255,255,0.95);
+}
+
+/* Fix for document checklist text color */
+.section ul {
+  color: rgba(255,255,255,0.9) !important;
+}
+.section ul li {
+  margin-bottom: 6px;
+}
+
+
+/* REVEAL animation utilities */
+.reveal { opacity: 0; transform: translateY(12px); transition: transform .6s cubic-bezier(.2,.9,.2,1), opacity .6s; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* MOBILE */
+@media (max-width: 880px) {
+  .nav-wrapper { padding: 0 12px; }
+  .logo { height: 46px; }
+  nav { gap: 10px; }
+  .hero-img { height: 220px; }
+  .hero-glass { padding: 20px; }
+  body { padding-top: 72px; }
+}
+
+/* reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 70vw;              /* adjust size here */
+  height: 70vw;
+  max-width: 900px;         /* limit scaling */
+  max-height: 900px;
+  background-image: url("../img/bg.png"); /* <-- this is your logo */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0.07;            /* transparency of watermark */
+  filter: grayscale(100%) brightness(140%);
+  transform: translate(-50%, -50%);
+  z-index: -10;             /* stays behind ALL content */
+  pointer-events: none;     /* click-through */
+}
+
+/* FULL-BLEED HERO (removes side gaps completely) */
+.fullhero {
+  width: 100vw;              /* full viewport width */
+  margin-left: calc(50% - 50vw); /* pull section outward to stretch */
+  margin-right: calc(50% - 50vw);
+}
+
+/* Hero image also needs edge-to-edge */
+.fullhero .hero-img {
+  width: 100vw;
+  height: 90vh;              /* adjust height */
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ===========================
+   FULL-WIDTH HEADLINE TICKER (solid block)
+   =========================== */
+/* Ticker bar */
+.site-notice {
+  position: fixed;
+  top: var(--nav-height, 75px); /* Keeps it just under navbar */
+  left: 0;
+  width: 100%;
+  background: #003873; /* solid navy */
+  color: white;
+  overflow: hidden;
+  white-space: nowrap;
+  z-index: 9999;
+  padding: 6px 0;          /* ✅ reduce height */
+  line-height: 1.4;        /* ✅ compact text */
+}
+
+/* inner flex container */
+.site-notice__inner {
+  display: flex;
+  align-items: center;     /* ✅ vertically centers text */
+  justify-content: center;
+  gap: 20px;
+}
+
+/* scrolling text */
+.site-notice__text {
+  overflow: hidden;
+  width: 100%;
+}
+
+/* FIX: Start fully on the right and move left smoothly */
+.headline-track {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  height: 38px;        /* keep the smaller height */
+  display: flex;
+  align-items: center;
+  background: #053e77; /* solid color heading */
+}
+
+.ticker {
+  white-space: nowrap;
+  display: inline-block;
+  font-size: 14px;
+  animation: ticker-scroll 20s linear infinite;
+  will-change: transform;
+  padding-left: 100%; /* ensures it starts off-screen RIGHT */
+}
+
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(0); /* starts fully on the right edge */
+  }
+  100% {
+    transform: translateX(-100%); /* moves to full left */
+  }
+}
+
+/* Moves across, then reverses */
+@keyframes tickerBounce {
+  0% {
+    transform: translateX(100%);   /* start off-screen right */
+  }
+  50% {
+    transform: translateX(-20%);   /* center-ish */
+  }
+  100% {
+    transform: translateX(-100%);  /* fully left */
+  }
+}
+
+/* OPTIONAL: pause on hover */
+.ticker:hover {
+  animation-play-state: paused;
+}
+
+
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+  .site-notice { padding: 0 12px; top: 12px; }
+  .site-notice__inner { padding:10px 12px; max-width: 94%; flex-direction: column; align-items:flex-start; gap:8px; }
+  .site-notice__actions { width:100%; justify-content:flex-end; }
+  .site-notice__text { margin-right: 0; }
+}
+
+/* ===========================
+   SITE NOTICE TICKER (right -> left)
+   =========================== */
+
+/* container that hides overflow */
+.site-notice__ticker {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  height: 1.05rem; /* small default — JS will adjust if needed */
+  align-items: center;
+}
+
+/* the track that moves leftwards */
+.site-notice__ticker-track {
+  display: inline-block;
+  white-space: nowrap;
+  will-change: transform;
+  /* animation applied dynamically by JS with computed duration */
+}
+
+/* individual items */
+.site-notice__ticker-item {
+  display: inline-block;
+  padding: 0 28px;           /* spacing between headlines */
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.95);
+  vertical-align: middle;
+}
+
+/* subtle separator (dot) between items */
+.site-notice__ticker-item + .site-notice__ticker-item::before {
+  content: "•";
+  display: inline-block;
+  margin-right: 12px;
+  color: rgba(255,255,255,0.35);
+  font-weight: 500;
+}
+
+/* pause animation when hovering ticker (desktop) */
+.site-notice__ticker:hover .site-notice__ticker-track,
+.site-notice__ticker:focus-within .site-notice__ticker-track {
+  animation-play-state: paused !important;
+}
+
+/* small-screen tweak */
+@media (max-width: 680px) {
+  .site-notice__ticker-item { padding: 0 18px; font-size: 0.92rem; }
+}
+
+/* Wrapper that contains both tracks (animated) */
+.site-notice__ticker-trackwrap {
+  display: inline-block;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+/* pause on hover already handled in injected keyframes, but keep safety here too */
+.site-notice__ticker:hover .site-notice__ticker-trackwrap,
+.site-notice__ticker:focus-within .site-notice__ticker-trackwrap {
+  animation-play-state: paused;
+}
+
+/* Booking form layout */
+
+.booking-form {
+  max-width: 800px;
+  margin: 24px auto;
+  padding: 24px;
+  border-radius: 18px;
+}
+
+.booking-form .form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: flex-start;   /* ensure all inputs are fully visible */
+}
+
+.booking-form .form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.booking-form label {
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
+.centered-text {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 20px auto;
+}
+
+
+/* ⬇️ Important: make inputs fill the column and not clip */
+.booking-form input,
+.booking-form select,
+.booking-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e6edf9;
+  background: rgba(255, 255, 255, 0.95);
+  font-size: 0.95rem;
+}
+
+.booking-form textarea {
+  resize: vertical;
+}
+
+.booking-form .form-actions {
+  justify-content: flex-end;
+}
+
+.booking-form .btn-primary {
+  padding: 10px 24px;
+}
+
+/* Stack on smaller screens */
+@media (max-width: 768px) {
+  .booking-form .form-row {
+    flex-direction: column;
+  }
+}
+
+
+/* ========== PORTAL / DASHBOARD ========== */
+
+.portal-body {
+  background: radial-gradient(circle at top, #144c9b 0, #02254d 45%, #021529 100%);
+}
+
+/* Main layout: left sidebar, right portal fills rest */
+.portal-wrapper {
+  padding-top: 90px;           /* space for navbar */
+  padding-bottom: 40px;
+}
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr); /* LEFT sidebar, RIGHT main */
+  gap: 24px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;                   /* no side gaps */
+  padding: 0 24px 24px;        /* small inside padding */
+  box-sizing: border-box;
+}
+
+.portal-sidebar {
+  background: rgba(4, 32, 80, 0.95);
+  border-radius: 18px;
+  padding: 18px 16px;
+  color: #eaf1ff;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+}
+
+.dashboard-main {
+  background: rgba(2, 34, 82, 0.96);
+  border-radius: 18px;
+  padding: 20px 20px 22px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
+}
+
+.portal-sidebar-title {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+  margin-bottom: 10px;
+}
+
+.portal-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.portal-menu li {
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-bottom: 4px;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.portal-menu li:hover {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateX(2px);
+}
+
+.portal-menu li.active {
+  background: #ffffff;
+  color: #053e77;
+  font-weight: 600;
+}
+
+.portal-sidebar-footer {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  font-size: 0.85rem;
+}
+
+/* Main */
+.dashboard-main {
+  background: rgba(2, 34, 82, 0.96);
+  border-radius: 18px;
+  padding: 20px 20px 22px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.dashboard-header h1 {
+  font-size: 1.4rem;
+  margin-bottom: 4px;
+}
+
+.dashboard-header p {
+  font-size: 0.95rem;
+  color: rgba(235, 243, 255, 0.9);
+  margin: 0;
+}
+
+.dashboard-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.status-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(19, 206, 102, 0.15);
+  color: #b8ffd7;
+  font-size: 0.85rem;
+}
+
+/* Filters */
+.dashboard-filters {
+  display: flex;
+  gap: 10px;
+  margin: 14px 0 16px;
+}
+
+.dashboard-filters input[type="search"],
+.dashboard-filters select {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(216, 230, 255, 0.5);
+  background: rgba(4, 41, 92, 0.9);
+  color: #eaf1ff;
+  font-size: 0.9rem;
+}
+
+.dashboard-filters input::placeholder {
+  color: rgba(227, 236, 255, 0.7);
+}
+
+/* Kanban */
+.kanban-layout {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.kanban-board {
+  width: 100%;
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.kanban-column {
+  background: rgba(5, 51, 110, 0.9);
+  border-radius: 14px;
+  padding: 10px 10px 12px;
+  min-width: 230px;
+}
+
+.kanban-column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.kanban-column-header h2 {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+}
+
+.badge {
+  background: rgba(255,255,255,0.15);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 0.8rem;
+}
+
+/* Make empty columns droppable and visible */
+.kanban-list {
+  min-height: 120px;      /* or 80px / whatever looks good */
+  padding: 8px;           /* some padding so it has clickable area */
+  border-radius: 10px;    /* optional, for nicer look */
+}
+
+.kanban-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 10px 10px 8px;
+  color: #143458;
+  font-size: 0.9rem;
+  box-shadow: 0 8px 18px rgba(3, 34, 82, 0.18);
+}
+
+.kanban-card h3 {
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.kanban-card p {
+  margin: 0 0 6px;
+  color: #425a79;
+}
+
+.kanban-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.tag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(5, 126, 255, 0.12);
+  color: #045ad8;
+}
+
+.due {
+  color: #7b8aa4;
+}
+
+/* Side panel (chat-style) */
+.portal-sidepanel {
+  background: rgba(5, 51, 110, 0.9);
+  border-radius: 14px;
+  padding: 12px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.portal-sidepanel h3 {
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.sidepanel-chat {
+  background: rgba(1, 24, 56, 0.9);
+  border-radius: 10px;
+  padding: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.chat-bubble {
+  max-width: 90%;
+  padding: 6px 8px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+}
+
+.chat-bubble.left {
+  background: rgba(255, 255, 255, 0.1);
+  align-self: flex-start;
+}
+
+.chat-bubble.right {
+  background: rgba(24, 185, 109, 0.18);
+  align-self: flex-end;
+}
+
+.chat-bubble span {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+.chat-input {
+  border-radius: 10px;
+  border: 1px solid rgba(216, 230, 255, 0.5);
+  padding: 8px;
+  background: rgba(1, 24, 56, 0.9);
+  color: #eaf1ff;
+  font-size: 0.85rem;
+  resize: vertical;
+}
+
+.chat-send-btn {
+  align-self: flex-end;
+  margin-top: 4px;
+}
+
+/* user pill in navbar */
+.nav-user-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  font-size: 0.85rem;
+  margin-right: 8px;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+  .kanban-layout {
+    grid-template-columns: 1fr;
+  }
+  .portal-sidebar {
+    order: 2;
+  }
+}
+
+@media (max-width: 720px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .dashboard-meta {
+    align-items: flex-start;
+  }
+  .dashboard-filters {
+    flex-direction: column;
+  }
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.admin-table th,
+.admin-table td {
+  border-bottom: 1px solid rgba(230, 237, 249, 0.2);
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.admin-table th {
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.admin-table tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.drag-handle {
+  cursor: grab;
+  font-size: 1.1rem;
+  opacity: 0.6;
+  user-select: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+  opacity: 1;
+}
