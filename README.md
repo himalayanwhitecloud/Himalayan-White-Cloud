@@ -1,2 +1,0 @@
-# Himalayan-White-Cloud
-HWC
