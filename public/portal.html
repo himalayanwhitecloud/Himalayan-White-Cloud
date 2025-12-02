@@ -6,6 +6,11 @@
   <title>Client Workspace — Himalayan White Cloud Service</title>
   <link rel="stylesheet" href="css/style.css">
 
+<script src="js/nav.js"></script>
+<script src="js/reveal.js"></script>
+<script src="js/notify.js"></script>
+
+
   <!-- Lightweight modal styles -->
   <style>
     .card-modal {
@@ -102,14 +107,22 @@
 
 <header class="navbar">
   <div class="container nav-wrapper">
-    <a href="index.html" class="brand" aria-label="Home">
+    <!-- Brand / logo -->
+    <a href="../index.html" class="brand" aria-label="Home">
       <img src="img/1.jpg" alt="HWC Logo" class="logo">
       <h2 class="brand-popup-title">Himalayan White Cloud Service</h2>
     </a>
 
+    <!-- Main nav links -->
     <nav>
-      <span id="userEmail" class="nav-user-pill"></span>
-      <button id="logoutBtn" class="btn-ghost" type="button">Logout</button>
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="services.html" class="nav-link">Services</a>
+      <a href="destinations.html" class="nav-link">Destinations</a>
+      <a href="elderly.html" class="nav-link">Elderly Care</a>
+      <a href="book.html" class="nav-link btn-primary">Book Consultation</a>
+      <a href="login.html" class="nav-link btn-primary">Login</a>
+      <!-- If needed -->
+      <!-- <a href="scripts/admin.html" class="nav-link">Admin</a> -->
     </nav>
   </div>
 </header>
