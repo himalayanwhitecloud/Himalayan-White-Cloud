@@ -4,58 +4,61 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Login — Himalayan White Cloud Service</title>
+
   <link rel="stylesheet" href="css/style.css">
 
-<script src="js/nav.js"></script>
-<script src="js/reveal.js"></script>
-<script src="js/notify.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="js/notify.js"></script>
+
   <style>
-    /* Ensure hero image stays at the back */
-    .hero-img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      object-fit: cover;
-      z-index: 0;  /* 👈 image at back */
-    }
-
-    /* Container for login form */
-    .login-container {
-      position: relative;
-      z-index: 2; /* 👈 bring form above image */
-      background: rgba(255,255,255,0.12);
-      backdrop-filter: blur(18px);
-      border-radius: 20px;
-      padding: 40px 32px;
-      width: min(420px, 90%);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.25);
-      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
-      text-align: center;
-      margin: 0 auto;
-    }
-
-    /* vertically center the form */
-    .hero {
+    /* Fullscreen hero background for login */
+    .login-hero {
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: calc(100vh - 80px); /* header height approx */
+      padding: 40px 16px;
+    }
+
+    .login-hero .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    /* Glassmorphic login card */
+    .login-container {
+      position: relative;
+      z-index: 2;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(18px);
+      border-radius: 20px;
+      padding: 32px 26px;
+      width: min(420px, 100%);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+      text-align: center;
     }
 
     .login-container h1 {
       font-size: 2rem;
-      margin-bottom: 10px;
-      font-family: 'Playfair Display', serif;
+      margin-bottom: 8px;
     }
 
     .login-container p {
       font-size: 0.95rem;
       color: rgba(255,255,255,0.9);
-      margin-bottom: 24px;
+      margin-bottom: 18px;
+    }
+
+    .login-container form {
+      margin-top: 8px;
     }
 
     .login-container input {
@@ -77,21 +80,32 @@
       padding: 12px;
       border-radius: 12px;
       border: none;
-      background: #fff;
+      background: #ffffff;
       color: #1c3ec9;
       font-weight: 700;
       cursor: pointer;
       margin-top: 8px;
-      transition: transform 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .login-container button:hover {
       transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     }
 
     .login-container a {
-      color: #fff;
+      color: #ffffff;
       text-decoration: underline;
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 600px) {
+      .login-container {
+        padding: 24px 18px;
+      }
+      .login-container h1 {
+        font-size: 1.7rem;
+      }
     }
   </style>
 </head>
@@ -112,35 +126,56 @@
       <a href="abroadstudy.html" class="nav-link">Abroad Study</a>
       <a href="elderly.html" class="nav-link">Elderly Care</a>
       <a href="book.html" class="nav-link btn-primary">Book Consultation</a>
-      <a href="login.html" class="nav-link btn-primary">Login</a>
-      <!-- If needed -->
-      <!-- <a href="scripts/admin.html" class="nav-link">Admin</a> -->
+      <a href="login.html" class="nav-link btn-primary" aria-current="page">Login</a>
     </nav>
   </div>
 </header>
 
-<section class="hero fullhero">
-  <img src="img/2.jpg" alt="Background" class="hero-img">
+<main>
+  <section class="hero fullhero login-hero">
+    <img src="img/2.jpg" alt="Background" class="hero-img">
 
-  <div class="login-container">
-    <h1>Welcome Back</h1>
-    <p>Log in to continue your journey with Himalayan White Cloud.</p>
+    <div class="login-container">
+      <h1>Welcome Back</h1>
+      <p>Log in to continue your journey with Himalayan White Cloud.</p>
 
+      <form onsubmit="return handleLogin(event)">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
 
-        <form onsubmit="return handleLogin(event)">  
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
-
-    <p style="margin-top:10px;">Forgot your password? <a href="#">Reset it</a></p>
-    <p>Don’t have an account? <a href="#">Sign up</a></p>
-  </div>
-</section>
+      <p style="margin-top:10px;">Forgot your password? <a href="#">Reset it</a></p>
+      <p>Don’t have an account? <a href="#">Sign up</a></p>
+    </div>
+  </section>
+</main>
 
 <footer>
   <div class="container">
-    <p>© 2025 Himalayan White Cloud Service — Made with care for people, not just paperwork.</p>
+
+    <div class="social-icons">
+      <a href="#"><img src="img/icons/twitter.svg" alt=""></a>
+      <a href="#"><img src="img/icons/linkedin.svg" alt=""></a>
+      <a href="#"><img src="img/icons/facebook.svg" alt=""></a>
+      <a href="#"><img src="img/icons/instagram.svg" alt=""></a>
+    </div>
+
+    <div class="footer-links" style="text-align:center;margin-bottom:10px;">
+      <a href="#" style="margin:0 10px; color:#ffffff; text-decoration:none;">Privacy</a> |
+      <a href="#" style="margin:0 10px; color:#ffffff; text-decoration:none;">Terms</a> |
+      <a href="#" style="margin:0 10px; color:#ffffff; text-decoration:none;">FAQs</a> |
+      <a href="#" style="margin:0 10px; color:#ffffff; text-decoration:none;">Help</a>
+    </div>
+
+    <p style="text-align:center;">
+      © <a href="https://www.himalayanwhitecloud.com"
+           target="_blank"
+           style="color:#00e5ff;text-decoration:none;">
+          www.himalayanwhitecloud.com
+        </a>.
+      All Rights Reserved. Designed by <strong>HWC</strong>
+    </p>
   </div>
 </footer>
 
@@ -157,11 +192,10 @@
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/login", {
+      const response = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
-
       });
 
       const data = await response.json();
@@ -185,7 +219,6 @@
     }
   }
 </script>
-
 
 </body>
 </html>

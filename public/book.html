@@ -4,11 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Book Consultation — Himalayan White Cloud Service</title>
+
   <link rel="stylesheet" href="css/style.css">
 
-<script src="js/nav.js"></script>
-<script src="js/reveal.js"></script>
-<script src="js/notify.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="js/notify.js"></script>
 </head>
 <body>
 
@@ -26,83 +27,137 @@
       <a href="tradex.html" class="nav-link">Trade X</a>
       <a href="abroadstudy.html" class="nav-link">Abroad Study</a>
       <a href="elderly.html" class="nav-link">Elderly Care</a>
-      <a href="book.html" class="nav-link btn-primary">Book Consultation</a>
+      <a href="book.html" class="nav-link btn-primary" aria-current="page">Book Consultation</a>
       <a href="login.html" class="nav-link btn-primary">Login</a>
-      <!-- If needed -->
-      <!-- <a href="scripts/admin.html" class="nav-link">Admin</a> -->
     </nav>
   </div>
 </header>
 
-
 <main class="section">
   <div class="container">
+
     <h1 class="section-title">Book Consultation</h1>
 
-    <p class="reveal centered-text">
-  Select a free 20-minute slot and provide a few details so we can prepare. 
-  This temporary form is front-end only and demonstrates the flow.
-</p>
+    <p class="reveal" style="max-width:860px;margin:0 auto 20px auto;text-align:center;">
+      Select a free 20-minute slot and share a few details so we can prepare.  
+      This booking form shows the front-end flow and can later be connected to your backend.
+    </p>
 
-   <form class="card booking-form" onsubmit="handleBooking(event)">
-  <div class="form-row">
-    <div class="form-group">
-      <label for="bk-name">Full name</label>
-      <input id="bk-name" type="text" required>
-    </div>
-    <div class="form-group">
-      <label for="bk-phone">Phone Number</label>
-      <input id="bk-phone" type="tel" required>
-    </div>
-    <div class="form-group">
-      <label for="bk-email">Email</label>
-      <input id="bk-email" type="email" required>
-    </div>
-  </div>
+    <!-- two-column layout: info + form (stacks on mobile because of .grid media queries) -->
+    <div class="grid" style="margin-top:24px;gap:24px;align-items:flex-start;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);">
 
-  <div class="form-row">
-    <div class="form-group">
-      <label for="bk-service">Service</label>
-      <select id="bk-service">
-        <option>Education Consulting</option>
-        <option>Immigration / Visas</option>
-        <option>Elderly Care</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="bk-date">Date</label>
-      <input id="bk-date" type="date" required>
-    </div>
-    <div class="form-group">
-      <label for="bk-time">Time</label>
-      <input id="bk-time" type="time" required>
-    </div>
-  </div>
+      <!-- LEFT: Info panel -->
+      <section class="card reveal" style="padding:22px;">
+        <h2 style="margin-bottom:10px;">How Consultations Work</h2>
+        <p>
+          During your consultation we’ll talk through your goals, timelines and budget, then suggest the
+          best service or package from:
+        </p>
+        <ul style="margin-top:10px;">
+          <li>Education consulting &amp; study abroad pathways</li>
+          <li>Immigration and visa guidance</li>
+          <li>Elderly care coordination (Silver, Gold, Diamond)</li>
+          <li>Trade X — import &amp; export support</li>
+        </ul>
+        <p style="margin-top:10px;">
+          Once you send your request, a team member will review it and confirm your time by email or phone.
+        </p>
+        <p style="margin-top:10px;font-size:0.9rem;opacity:0.9;">
+          <strong>Note:</strong> This demo form currently sends data to <code>/api/booking</code>.
+          Your backend developer can connect that route to email, CRM or calendar booking.
+        </p>
+      </section>
 
-  <div class="form-row">
-    <div class="form-group">
-      <label for="bk-notes">Notes</label>
-      <textarea id="bk-notes" rows="4"></textarea>
+      <!-- RIGHT: Booking form -->
+      <section class="card reveal" style="padding:22px;">
+        <h2 style="margin-bottom:14px;">Request a Free 20-Minute Call</h2>
+
+        <form class="booking-form" onsubmit="handleBooking(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="bk-name">Full name</label>
+              <input id="bk-name" type="text" required>
+            </div>
+            <div class="form-group">
+              <label for="bk-phone">Phone Number</label>
+              <input id="bk-phone" type="tel" required>
+            </div>
+            <div class="form-group">
+              <label for="bk-email">Email</label>
+              <input id="bk-email" type="email" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="bk-service">Service</label>
+              <select id="bk-service">
+                <option>Education Consulting</option>
+                <option>Immigration / Visas</option>
+                <option>Elderly Care</option>
+                <option>Trade X</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="bk-date">Preferred Date</label>
+              <input id="bk-date" type="date" required>
+            </div>
+            <div class="form-group">
+              <label for="bk-time">Preferred Time</label>
+              <input id="bk-time" type="time" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group" style="width:100%;">
+              <label for="bk-notes">Notes (optional)</label>
+              <textarea id="bk-notes" rows="4" placeholder="Tell us briefly what you’d like to discuss…"></textarea>
+            </div>
+          </div>
+
+          <div class="form-row form-actions" style="justify-content:flex-end;">
+            <button type="submit" class="btn-primary">Book a slot</button>
+          </div>
+
+          <p style="text-align:center; margin-top:10px;font-size:0.9rem;opacity:0.9;">
+            You won’t be charged — this is a free consultation request.
+          </p>
+        </form>
+      </section>
+
     </div>
-  </div>
-
-  <div class="form-row form-actions">
-    <button type="submit" class="btn-primary">Book a slot</button>
-  </div>
-
-    <p style="text-align:center; margin-top:12px;">Want form submission.</p>
-
   </div>
 </main>
 
 <footer>
   <div class="container">
-    <p>© 2025 Himalayan White Cloud Service</p>
+
+    <div class="social-icons">
+      <a href="#"><img src="img/icons/twitter.svg" alt=""></a>
+      <a href="#"><img src="img/icons/linkedin.svg" alt=""></a>
+      <a href="#"><img src="img/icons/facebook.svg" alt=""></a>
+      <a href="#"><img src="img/icons/instagram.svg" alt=""></a>
+    </div>
+
+    <div class="footer-links" style="text-align:center;margin-bottom:10px;">
+      <a href="#" style="margin:0 10px; color:#ffffff; text-decoration:none;">Privacy</a> |
+      <a href="#" style="margin:0 10px; color:#ffffff; text-decoration:none;">Terms</a> |
+      <a href="#" style="margin:0 10px; color:#ffffff; text-decoration:none;">FAQs</a> |
+      <a href="#" style="margin:0 10px; color:#ffffff; text-decoration:none;">Help</a>
+    </div>
+
+    <p style="text-align:center;">
+      © <a href="https://www.himalayanwhitecloud.com"
+           target="_blank"
+           style="color:#00e5ff;text-decoration:none;">
+          www.himalayanwhitecloud.com
+        </a>.
+      All Rights Reserved. Designed by <strong>HWC</strong>
+    </p>
   </div>
 </footer>
 
-
-
+<script>
   async function handleBooking(event) {
     event.preventDefault();
 
@@ -128,7 +183,7 @@
         return;
       }
 
-      alert("Thank you! Your booking request has been received. We’ll confirm your slot by email/phone.");
+      alert("Thank you! Your booking request has been received. We’ll confirm your slot by email or phone.");
       event.target.reset();
     } catch (err) {
       console.error(err);

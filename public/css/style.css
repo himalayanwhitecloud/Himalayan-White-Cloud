@@ -72,40 +72,53 @@ body {
   text-decoration: none;
 }
 
-.brand-text {
-  font-size: 18px;
-  font-weight: 700;
-  color: #ffffff;
-  white-space: nowrap;
+/* LOGO - constrain size (prevents huge logos) */
+/* LOGO - constrain size (prevents huge logos) */
+.logo {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  margin-right: 8px;
+  border-radius: 8px;
 }
 
-/* --- BRAND POPUP TITLE ANIMATION --- */
+/* BRAND (Logo + title) */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+/* Main brand title text */
 .brand-popup-title {
-  font-size: 28px;
+  margin: 0;
   font-weight: 700;
-  color: #ffffff !important;        /* ✅ FIXED — always white */
-  opacity: 0;
-  transform: translateX(-60px);
-  animation: slideInLeft 0.8s ease-out forwards;
+  color: #ffffff !important;
+  white-space: nowrap;                /* keep on a single line */
+  font-size: clamp(16px, 3.5vw, 22px);/* desktop bigger, mobile smaller */
+  overflow: visible;
+  transform: none;
+  animation: none;                    /* keep it simple & visible */
 }
 
-@keyframes slideInLeft {
-  0% {
-    opacity: 0;
-    transform: translateX(-60px);
+/* Make header taller and stack brand + nav on smaller screens */
+@media (max-width: 768px) {
+  .navbar {
+    height: auto;             /* 🔥 allow full height instead of fixed 86px */
+    padding: 8px 0;
   }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
+
+  .nav-wrapper {
+    flex-direction: column;   /* brand on first row, nav on second row */
+    align-items: flex-start;  /* align left (you can change to center) */
+    gap: 8px;
   }
 }
 
-/* Responsive — shrink text on smaller screens */
-@media (max-width: 900px) {
-  .brand-text {
-    font-size: 14px;
-  }
-}
+
+
 
 /* NAV LINKS */
 nav {
@@ -556,25 +569,33 @@ body::before {
 /* ---------------------------- */
 
 @media (max-width: 992px) {
-  .nav-wrapper {
-    flex-wrap: wrap;
-    padding: 10px 0;
-  }
 
   nav {
     margin-left: 0 !important;
     width: 100%;
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
+    flex-wrap: nowrap;               /* stays in ONE row */
+    gap: 12px;
+    justify-content: flex-start;     /* allows left-right drag */
+    overflow-x: auto;                /* enables drag scrolling */
+    -webkit-overflow-scrolling: touch; /* smooth iOS/Android swipe */
+    scrollbar-width: none;           /* hide scrollbar (Firefox) */
+    scroll-behavior: smooth;
+    overscroll-behavior-x: contain;
   }
+
+  nav::-webkit-scrollbar {
+    display: none;                   /* 🔥 hides scrollbar (Chrome/Safari/Edge) */
+  }
+
+}
+
 
   .nav-link, .btn-primary {
     white-space: nowrap;
     font-size: 15px;
   }
-}
+
 
 @media (max-width: 768px) {
 
