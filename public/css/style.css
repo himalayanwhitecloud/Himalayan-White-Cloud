@@ -45,13 +45,87 @@ body {
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
-/* nav wrapper: keep nav items on one row */
+/* Ensure nav-wrapper can position things */
 .nav-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
   width: 100%;
+  position: relative;
+  padding-right: 70px;   /* 🔥 reserve space for hamburger on PC */
+}
+
+/* Hidden checkbox */
+.menu-toggle {
+  display: none;
+}
+
+/* 3-line hamburger button – visible on PC + mobile */
+.menu-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  width: 34px;
+  height: 28px;
+  padding: 5px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.55);
+  background: rgba(8,25,70,0.85);
+  cursor: pointer;
+}
+
+.menu-btn span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 3px;
+}
+
+/* Dropdown with all titles – HIDDEN by default */
+.menu-panel {
+  position: absolute;
+  top: 60px;
+  right: 14px;
+  width: 210px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(5,20,60,0.97);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.55);
+  display: none;                  /* ← this stops “always open” */
+  z-index: 1100;
+}
+
+.menu-panel a {
+  display: block;
+  padding: 6px 2px;
+  color: #ffffff;
+  text-decoration: none;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.menu-panel a:hover {
+  color: #00e5ff;
+}
+
+/* When checkbox is checked → show panel */
+.menu-toggle:checked + .menu-btn + .menu-panel {
+  display: block;
+}
+
+/* Optional: on very large screens you can shrink button slightly */
+@media (min-width: 1024px) {
+  .menu-btn {
+    top: 12px;
+    right: 24px;
+  }
 }
 
 /* LOGO - constrain size (prevents huge logos) */
@@ -571,24 +645,30 @@ body::before {
 @media (max-width: 992px) {
 
   nav {
-    margin-left: 0 !important;
     width: 100%;
     display: flex;
-    flex-wrap: nowrap;               /* stays in ONE row */
-    gap: 12px;
-    justify-content: flex-start;     /* allows left-right drag */
-    overflow-x: auto;                /* enables drag scrolling */
-    -webkit-overflow-scrolling: touch; /* smooth iOS/Android swipe */
-    scrollbar-width: none;           /* hide scrollbar (Firefox) */
-    scroll-behavior: smooth;
-    overscroll-behavior-x: contain;
+    flex-wrap: nowrap;               /* keep links in one row */
+    gap: 14px;
+
+    overflow-x: auto;                /* enable horizontal scroll */
+    overflow-y: hidden;              /* 🔥 disable vertical scroll completely */
+
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch; /* smooth swipe */
+    scrollbar-width: none;             /* hide scrollbar (Firefox) */
+
+    touch-action: pan-x;              /* 🔥 allow only left-right drag */
+    overscroll-behavior-x: contain;   /* prevent bounce up/down */
   }
 
-  nav::-webkit-scrollbar {
-    display: none;                   /* 🔥 hides scrollbar (Chrome/Safari/Edge) */
-  }
+  nav::-webkit-scrollbar { display: none; } /* hide scrollbar on Chrome/Safari */
 
+  .btn-primary, .nav-link {
+    font-size: 15px;
+    white-space: nowrap;
+  }
 }
+
 
 
   .nav-link, .btn-primary {
