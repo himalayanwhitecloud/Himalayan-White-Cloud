@@ -21,6 +21,30 @@ body {
 
 }
 
+/* White tick bullet list style */
+.tick-list {
+  list-style: none;
+  padding-left: 0;
+  color: #fff;
+}
+
+.tick-list li {
+  position: relative;
+  margin-bottom: 10px;
+  padding-left: 26px; /* spacing for tick */
+  line-height: 1.6;
+}
+
+.tick-list li::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #ffffff;         /* tick color */
+  font-weight: bold;
+  font-size: 17px;
+}
+
 
 /* CONTAINER (original centered width) */
 .container {
@@ -192,6 +216,20 @@ body {
   }
 }
 
+/* Rotate for 3s → Pause 5s → Repeat */
+@keyframes logoRotateControlled {
+    0%   { transform: rotate(0deg); }
+    37.5% { transform: rotate(360deg); } /* 3s out of 8s total */
+    100% { transform: rotate(360deg); }  /* Hold still for remaining 5s */
+}
+
+.logo {
+    animation: logoRotateControlled 8s ease-in-out infinite;
+    transform-origin: center center;
+}
+
+
+
 
 /* Make header taller and stack brand + nav on smaller screens */
 @media (max-width: 768px) {
@@ -293,17 +331,39 @@ nav {
   border-radius: 10px;
 }
 
+/* HERO VIDEO BACKGROUND */
+.hero-video-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;              /* 🔥 IMPORTANT: NOT -1 */
+}
+
+
+#hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;       /* fill like background image */
+  display: block;
+}
+
 /* HERO CONTAINER */
 .hero {
   position: relative;
   width: 100%;
+  min-height: 100vh;       /* ensure there is space */
   display: flex;
   justify-content: center;
-  align-items: center;      /* <— centers vertically */
+  align-items: center;
   flex-direction: column;
   margin: 0;
   padding: 0;
+  overflow: hidden;        /* hide overflow from video */
 }
+
 
 /* Portrait hero image */
 .hero-img {
@@ -317,11 +377,14 @@ nav {
 }
 
 /* Center the hero glass card */
+/* Center the hero glass card */
 .hero-glass {
-  position: absolute;        /* <— sits ON TOP of the image */
-  bottom: 3vh;               /* adjust how high above bottom */
-  left: auto;
-  transform: translateX(-50%); /* <— centers horizontally */
+  position: absolute;           /* sits ON TOP of the video */
+  bottom: 6vh;                  /* distance above bottom, tweak if you want */
+  left: 24%;                    /* center horizontally */
+  transform: translateX(-50%);  /* perfect centering */
+  z-index: 1;                   /* above the video */
+
   width: min(900px, 55%);
   background: rgba(255,255,255,0.10);
   backdrop-filter: blur(14px);
@@ -331,6 +394,7 @@ nav {
   border: 1px solid rgba(255,255,255,0.25);
   box-shadow: 0 18px 50px rgba(0,0,0,0.25);
 }
+
 
 .hero-glass h1 {
   font-family: 'Playfair Display', serif;
@@ -1150,4 +1214,57 @@ body::before {
 
 .nav-link {
   white-space: nowrap;
+}
+
+
+/* ================ CERTIFICATION SCROLLER ================ */
+
+.cert-section {
+  margin-top: 40px;
+}
+
+.cert-marquee {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 14px 0 4px 0;
+}
+
+.cert-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 30px;
+  animation: certScroll 30s linear infinite;
+}
+
+/* Pause scroll when hovering over the section */
+.cert-marquee:hover .cert-track {
+  animation-play-state: paused;
+}
+
+.cert-slide img {
+  height: 80px;            /* adjust certificate size here */
+  width: auto;
+  display: block;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 6px;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+}
+
+/* Left → Right continuous scroll */
+@keyframes certScroll {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Slightly smaller on very small screens */
+@media (max-width: 600px) {
+  .cert-slide img {
+    height: 64px;
+  }
 }
