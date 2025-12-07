@@ -53,7 +53,7 @@ body {
   gap: 18px;
   width: 100%;
   position: relative;
-  padding-right: 70px;   /* 🔥 reserve space for hamburger on PC */
+  padding-right: 0px;   /* 🔥 reserve space for hamburger on PC */
 }
 
 /* Hidden checkbox */
@@ -63,22 +63,23 @@ body {
 
 /* 3-line hamburger button – visible on PC + mobile */
 .menu-btn {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 1200;
+  position: fixed;              /* move it independently from nav */
+  top: 12px;                    /* adjust vertical position */
+  right: 22px;                  /* push further to right edge */
+  z-index: 2000;                /* ensure always above everything */
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 4px;
-  width: 34px;
-  height: 28px;
-  padding: 5px;
+  width: 38px;
+  height: 32px;
+  padding: 6px;
   border-radius: 8px;
   border: 1px solid rgba(255,255,255,0.55);
-  background: rgba(8,25,70,0.85);
+  background: rgba(8,25,70,0.9);
   cursor: pointer;
 }
+
 
 .menu-btn span {
   display: block;
@@ -90,17 +91,18 @@ body {
 
 /* Dropdown with all titles – HIDDEN by default */
 .menu-panel {
-  position: absolute;
+  position: fixed;
   top: 60px;
-  right: 14px;
-  width: 210px;
-  padding: 10px 14px;
+  right: 22px;
+  width: 220px;
+  padding: 12px;
   border-radius: 14px;
   background: rgba(5,20,60,0.97);
   box-shadow: 0 14px 40px rgba(0,0,0,0.55);
-  display: none;                  /* ← this stops “always open” */
-  z-index: 1100;
+  display: none;
+  z-index: 1900;
 }
+
 
 .menu-panel a {
   display: block;
@@ -165,17 +167,31 @@ body {
   text-decoration: none;
 }
 
-/* Main brand title text */
+/* Main brand title text – slide in from right on load */
 .brand-popup-title {
   margin: 0;
   font-weight: 700;
   color: #ffffff !important;
-  white-space: nowrap;                /* keep on a single line */
-  font-size: clamp(16px, 3.5vw, 22px);/* desktop bigger, mobile smaller */
+  white-space: nowrap;                 /* keep on a single line */
+  font-size: clamp(16px, 3.5vw, 22px); /* desktop bigger, mobile smaller */
   overflow: visible;
-  transform: none;
-  animation: none;                    /* keep it simple & visible */
+
+  opacity: 0;                          /* start hidden */
+  transform: translateX(40px);         /* start slightly to the right */
+  animation: brandTitleSlide 0.9s ease-out forwards;
+  animation-delay: 0.2s;               /* small delay after page load */
 }
+@keyframes brandTitleSlide {
+  0% {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 
 /* Make header taller and stack brand + nav on smaller screens */
 @media (max-width: 768px) {
@@ -250,6 +266,23 @@ nav {
   border: none;
 }
 .btn-primary:hover { transform: translateY(-3px); }
+
+/* Secondary button uses same style as primary for now */
+.btn-secondary {
+  background: #ffffff;
+  color: #1c3ec9 !important;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(2,43,160,0.12);
+  border: none;
+  text-decoration: none;   /* remove underline on <a> */
+  display: inline-block;   /* so padding & radius work properly on <a> */
+}
+
+.btn-secondary:hover {
+  transform: translateY(-3px);
+}
 
 /* GHOST button */
 .btn-ghost {
@@ -428,81 +461,7 @@ body::before {
 /* ===========================
    FULL-WIDTH HEADLINE TICKER (solid block)
    =========================== */
-/* Ticker bar */
-.site-notice {
-  position: fixed;
-  top: var(--nav-height, 75px); /* Keeps it just under navbar */
-  left: 0;
-  width: 100%;
-  background: #003873; /* solid navy */
-  color: white;
-  overflow: hidden;
-  white-space: nowrap;
-  z-index: 9999;
-  padding: 6px 0;          /* ✅ reduce height */
-  line-height: 1.4;        /* ✅ compact text */
-}
 
-/* inner flex container */
-.site-notice__inner {
-  display: flex;
-  align-items: center;     /* ✅ vertically centers text */
-  justify-content: center;
-  gap: 20px;
-}
-
-/* scrolling text */
-.site-notice__text {
-  overflow: hidden;
-  width: 100%;
-}
-
-/* FIX: Start fully on the right and move left smoothly */
-.headline-track {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  height: 38px;        /* keep the smaller height */
-  display: flex;
-  align-items: center;
-  background: #053e77; /* solid color heading */
-}
-
-.ticker {
-  white-space: nowrap;
-  display: inline-block;
-  font-size: 14px;
-  animation: ticker-scroll 20s linear infinite;
-  will-change: transform;
-  padding-left: 100%; /* ensures it starts off-screen RIGHT */
-}
-
-@keyframes ticker-scroll {
-  0% {
-    transform: translateX(0); /* starts fully on the right edge */
-  }
-  100% {
-    transform: translateX(-100%); /* moves to full left */
-  }
-}
-
-/* Moves across, then reverses */
-@keyframes tickerBounce {
-  0% {
-    transform: translateX(100%);   /* start off-screen right */
-  }
-  50% {
-    transform: translateX(-20%);   /* center-ish */
-  }
-  100% {
-    transform: translateX(-100%);  /* fully left */
-  }
-}
-
-/* OPTIONAL: pause on hover */
-.ticker:hover {
-  animation-play-state: paused;
-}
 
 
 
@@ -514,70 +473,108 @@ body::before {
   .site-notice__text { margin-right: 0; }
 }
 
-/* ===========================
-   SITE NOTICE TICKER (right -> left)
-   =========================== */
+/* ===============================
+   ⏩ SITE NOTICE — Right→Left News Ticker
+   ===============================*/
+/* ===============================
+   ⏩ SITE NOTICE — News Ticker
+   ===============================*/
 
-/* container that hides overflow */
-.site-notice__ticker {
-  display: block;
+#site-notice {
+  position: fixed;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  overflow: hidden;
-  position: relative;
-  height: 1.05rem; /* small default — JS will adjust if needed */
+  background: rgba(0, 44, 88, 0.92);
+  color: #fff;
+  padding: 8px 0;
+  z-index: 99999;
+  display: flex;                 /* text on left, buttons on right */
   align-items: center;
+  border-top: 2px solid rgba(255,255,255,0.25);
 }
 
-/* the track that moves leftwards */
-.site-notice__ticker-track {
-  display: inline-block;
+/* Left area that contains the animated text */
+#site-notice .ticker-track {
+  flex: 1;
+  overflow: hidden;
   white-space: nowrap;
-  will-change: transform;
-  /* animation applied dynamically by JS with computed duration */
 }
 
-/* individual items */
-.site-notice__ticker-item {
+/* The actual scrolling text */
+#site-notice .ticker-text {
   display: inline-block;
-  padding: 0 28px;           /* spacing between headlines */
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: rgba(255,255,255,0.95);
-  vertical-align: middle;
+  padding-left: 100%;            /* start off-screen on the right */
+  animation: noticeSlide 18s linear infinite;
+  font-size: 15px;
+  letter-spacing: 0.3px;
 }
 
-/* subtle separator (dot) between items */
-.site-notice__ticker-item + .site-notice__ticker-item::before {
-  content: "•";
-  display: inline-block;
-  margin-right: 12px;
-  color: rgba(255,255,255,0.35);
-  font-weight: 500;
-}
-
-/* pause animation when hovering ticker (desktop) */
-.site-notice__ticker:hover .site-notice__ticker-track,
-.site-notice__ticker:focus-within .site-notice__ticker-track {
-  animation-play-state: paused !important;
-}
-
-/* small-screen tweak */
-@media (max-width: 680px) {
-  .site-notice__ticker-item { padding: 0 18px; font-size: 0.92rem; }
-}
-
-/* Wrapper that contains both tracks (animated) */
-.site-notice__ticker-trackwrap {
-  display: inline-block;
-  white-space: nowrap;
-  will-change: transform;
-}
-
-/* pause on hover already handled in injected keyframes, but keep safety here too */
-.site-notice__ticker:hover .site-notice__ticker-trackwrap,
-.site-notice__ticker:focus-within .site-notice__ticker-trackwrap {
+/* Pause the animation when hovering the bar */
+#site-notice:hover .ticker-text {
   animation-play-state: paused;
 }
+
+/* Right area: Book Now + Close */
+#site-notice .notice-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px 0 8px;
+}
+
+/* BOOK NOW button */
+.notice-btn {
+  background: #00d5ff;
+  color: #003b63;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: 0.25s;
+}
+
+.notice-btn:hover {
+  background: #29e3ff;
+  color: #002b46;
+}
+
+/* Close (X) button */
+.notice-close {
+  background: transparent;
+  color: white;
+  font-size: 18px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: 0.2s;
+}
+
+.notice-close:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+/* Scroll animation: right → left */
+@keyframes noticeSlide {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Slightly smaller on very small screens */
+@media (max-width: 480px) {
+  #site-notice .ticker-text {
+    font-size: 13px;
+  }
+  .notice-btn {
+    padding: 5px 10px;
+    font-size: 13px;
+  }
+}
+
+
 
 /* Booking form layout */
 

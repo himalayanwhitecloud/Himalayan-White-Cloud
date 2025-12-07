@@ -31,6 +31,8 @@
       <a href="public/abroadstudy.html">Abroad Study</a>
       <a href="public/elderly.html">Elderly Care</a>
       <a href="public/tradex.html">Trade X</a>
+      <a href="about.html">About Us</a>
+      <a href="contact.html">Contact Us</a>
       <a href="public/book.html">Book Consultation</a>
       <a href="public/login.html">Login</a>
     </div>
@@ -41,6 +43,8 @@
       <a href="public/abroadstudy.html" class="nav-link">Abroad Study</a>
       <a href="public/elderly.html" class="nav-link">Elderly Care</a>
       <a href="public/tradex.html" class="nav-link">Trade X</a>  
+      <a href="about.html" class="nav-link">About Us</a>
+      <a href="contact.html" class="nav-link">Contact Us</a>
       <a href="public/book.html" class="nav-link btn-primary">Book Consultation</a>
       <a href="public/login.html" class="nav-link btn-primary">Login</a>
     </nav>
@@ -66,23 +70,20 @@
   </div>
 
   <!-- SITE NOTICE -->
-  <div id="site-notice" class="site-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
-    <div class="site-notice__inner">
-      <div>
-        <strong>Free 20-minute consultation</strong>
-        <div class="site-notice__text">
-          Book now — transparent pricing &amp; fast replies within 1 business day.
-        </div>
-      </div>
-
-      <div class="site-notice__actions">
-        <a href="public/book.html" class="btn-primary btn-sm">Book now</a>
-        <button id="site-notice-close" aria-label="Dismiss notification" class="btn-ghost btn-sm">
-          Dismiss
-        </button>
-      </div>
+  <div id="site-notice">
+  <div class="ticker-track">
+    <div class="ticker-text">
+      🚀 Free 20-minute consultation — Book today | Transparent pricing | Fast response team for Study, Trade & Elderly Care
     </div>
   </div>
+
+  <div class="notice-actions">
+    <a href="public/book.html" class="notice-btn">Book Now</a>
+    <button id="notice-close" class="notice-close">✕</button>
+  </div>
+</div>
+
+
 </section> <!-- close HERO -->
 
 <!-- OUR SERVICES (with animated icons and clickable titles) -->
@@ -131,7 +132,7 @@
       <!-- International Trade -->
       <div class="card reveal">
         <h3 class="service-heading">
-  <a href="public/services.html"
+  <a href="public/tradex.html"
      class="service-title-box"
      style="
        display:flex;
@@ -167,7 +168,7 @@
       <!-- Study Abroad -->
       <div class="card reveal">
        <h3 class="service-heading">
-  <a href="public/destinations.html"
+  <a href="public/abroadstudy.html"
      class="service-title-box"
      style="
        display:flex;
@@ -388,6 +389,11 @@
 <script src="public/js/nav.js"></script>
 <script src="public/js/reveal.js"></script>
 <script src="public/js/notify.js"></script>
+<script>
+  document.getElementById("notice-close").addEventListener("click", () => {
+    document.getElementById("site-notice").style.display = "none";
+  });
+</script>
 
 </body>
 </html>
