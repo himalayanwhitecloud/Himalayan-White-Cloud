@@ -1304,3 +1304,61 @@ body::before {
     display: none;
   }
 }
+
+/* Book page: make 2-column layout stack on mobile */
+.booking-grid{
+  grid-template-columns: minmax(0,1.1fr) minmax(0,1fr);
+}
+
+@media (max-width: 900px){
+  .booking-grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Book form: stack inputs on mobile */
+.booking-form .form-row{
+  display: flex;
+  gap: 14px;
+}
+
+.booking-form .form-group{
+  flex: 1;
+  min-width: 0;
+}
+
+.booking-form input,
+.booking-form select,
+.booking-form textarea{
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 700px){
+  .booking-form .form-row{
+    flex-direction: column;
+  }
+}
+
+/* ==========================
+   Messenger Jump Animation
+   ========================== */
+
+@keyframes messengerJump {
+  0%   { transform: translateY(0); }
+  20%  { transform: translateY(-6px); }
+  40%  { transform: translateY(0); }
+  60%  { transform: translateY(-3px); }
+  80%  { transform: translateY(0); }
+  100% { transform: translateY(0); }
+}
+
+/* Animate only the icon */
+.messenger-float img {
+  animation: messengerJump 2.5s ease-in-out infinite;
+}
+
+/* Pause animation when user hovers */
+.messenger-float:hover img {
+  animation-play-state: paused;
+}

@@ -31,7 +31,7 @@
 
     <!-- Dropdown menu -->
     <div class="menu-panel">
-      <a href="index.html">Home</a>
+      <a href="../index.html">Home</a>
       <a href="public/abroadstudy.html">Abroad Study</a>
       <a href="public/elderly.html">Elderly Care</a>
       <a href="public/tradex.html">Trade X</a>
@@ -68,7 +68,7 @@
     </p>
 
     <!-- two-column layout: info + form (stacks on mobile because of .grid media queries) -->
-    <div class="grid" style="margin-top:24px;gap:24px;align-items:flex-start;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);">
+    <div class="grid booking-grid" style="margin-top:24px;gap:24px;align-items:flex-start;">
 
       <!-- LEFT: Info panel -->
       <section class="card reveal" style="padding:22px;">
@@ -96,57 +96,74 @@
       <section class="card reveal" style="padding:22px;">
         <h2 style="margin-bottom:14px;">Request a Free 20-Minute Call</h2>
 
-        <form class="booking-form" onsubmit="handleBooking(event)">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="bk-name">Full name</label>
-              <input id="bk-name" type="text" required>
-            </div>
-            <div class="form-group">
-              <label for="bk-phone">Phone Number</label>
-              <input id="bk-phone" type="tel" required>
-            </div>
-            <div class="form-group">
-              <label for="bk-email">Email</label>
-              <input id="bk-email" type="email" required>
-            </div>
-          </div>
+        <form
+  name="booking"
+  method="POST"
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+  action="book-success.html"
+  class="booking-form"
+>
+  <!-- required for Netlify -->
+  <input type="hidden" name="form-name" value="booking" />
+  <p style="display:none;">
+    <label>Don’t fill this out: <input name="bot-field" /></label>
+  </p>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label for="bk-service">Service</label>
-              <select id="bk-service">
-                <option>Education Consulting</option>
-                <option>Immigration / Visas</option>
-                <option>Elderly Care</option>
-                <option>Trade X</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="bk-date">Preferred Date</label>
-              <input id="bk-date" type="date" required>
-            </div>
-            <div class="form-group">
-              <label for="bk-time">Preferred Time</label>
-              <input id="bk-time" type="time" required>
-            </div>
-          </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="bk-name">Full name</label>
+      <input id="bk-name" name="fullName" type="text" required>
+    </div>
 
-          <div class="form-row">
-            <div class="form-group" style="width:100%;">
-              <label for="bk-notes">Notes (optional)</label>
-              <textarea id="bk-notes" rows="4" placeholder="Tell us briefly what you’d like to discuss…"></textarea>
-            </div>
-          </div>
+    <div class="form-group">
+      <label for="bk-phone">Phone Number</label>
+      <input id="bk-phone" name="phone" type="tel" required>
+    </div>
 
-          <div class="form-row form-actions" style="justify-content:flex-end;">
-            <button type="submit" class="btn-primary">Book a slot</button>
-          </div>
+    <div class="form-group">
+      <label for="bk-email">Email</label>
+      <input id="bk-email" name="email" type="email" required>
+    </div>
+  </div>
 
-          <p style="text-align:center; margin-top:10px;font-size:0.9rem;opacity:0.9;">
-            You won’t be charged — this is a free consultation request.
-          </p>
-        </form>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="bk-service">Service</label>
+      <select id="bk-service" name="service" required>
+        <option value="">Select</option>
+        <option>Abroad Study</option>
+        <option>Elderly Care</option>
+        <option>Trade X</option>
+        <option>Immigration / Consultation</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="bk-date">Preferred Date</label>
+      <input id="bk-date" name="preferredDate" type="date" required>
+    </div>
+
+    <div class="form-group">
+      <label for="bk-time">Preferred Time</label>
+      <input id="bk-time" name="preferredTime" type="time" required>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="bk-notes">Notes (optional)</label>
+    <textarea id="bk-notes" name="notes" rows="4" placeholder="Tell us briefly what you’d like to discuss..."></textarea>
+  </div>
+
+  <button type="submit" class="btn-primary" style="margin-top:14px;">
+    Book a slot
+  </button>
+
+  <p style="margin-top:10px;font-size:0.95rem;opacity:0.9;text-align:center;">
+    You won’t be charged — this is a free consultation request.
+  </p>
+</form>
+
       </section>
 
     </div>
@@ -199,40 +216,18 @@
   </div>
 </footer>
 
-<script>
-  async function handleBooking(event) {
-    event.preventDefault();
+<!-- Messenger Floating Button -->
+<a
+  href="https://m.me/himalayanwhitecloud"
+  target="_blank"
+  rel="noopener noreferrer"
+  class="messenger-float"
+  aria-label="Chat on Messenger"
+>
+  <img src="img/icons/messenger.svg" alt="Messenger">
+  <span>Message us</span>
+</a>
 
-    const fullName = document.getElementById("bk-name").value.trim();
-    const phone    = document.getElementById("bk-phone").value.trim();
-    const email    = document.getElementById("bk-email").value.trim();
-    const service  = document.getElementById("bk-service").value;
-    const date     = document.getElementById("bk-date").value;
-    const time     = document.getElementById("bk-time").value;
-    const notes    = document.getElementById("bk-notes").value.trim();
-
-    try {
-      const res = await fetch("/api/booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullName, phone, email, service, date, time, notes })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        alert(data.message || "Sorry, something went wrong. Please try again.");
-        return;
-      }
-
-      alert("Thank you! Your booking request has been received. We’ll confirm your slot by email or phone.");
-      event.target.reset();
-    } catch (err) {
-      console.error(err);
-      alert("Server error. Please check that your backend is running.");
-    }
-  }
-</script>
 
 </body>
 </html>
