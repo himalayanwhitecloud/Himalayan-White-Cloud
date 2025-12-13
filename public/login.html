@@ -130,9 +130,9 @@
     <!-- Dropdown menu -->
     <div class="menu-panel">
       <a href="../index.html">Home</a>
-      <a href="public/abroadstudy.html">Abroad Study</a>
-      <a href="public/elderly.html">Elderly Care</a>
-      <a href="public/tradex.html">Trade X</a>
+      <a href="abroadstudy.html">Abroad Study</a>
+      <a href="elderly.html">Elderly Care</a>
+      <a href="tradex.html">Trade X</a>
       <a href="about.html">About Us</a>
       <a href="contact.html">Contact Us</a>
       <a href="book.html">Book Consultation</a>
@@ -233,7 +233,7 @@
     }
 
     try {
-      const response = await fetch("/api/login", {
+      const response = await fetch("/.netlify/functions/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
