@@ -1,16 +1,5 @@
 {
-  "rewrites": [
-    { "source": "/portal.html", "destination": "/public/portal.html" },
-    { "source": "/login.html", "destination": "/public/login.html" },
-    { "source": "/about.html", "destination": "/public/about.html" },
-    { "source": "/abroadstudy.html", "destination": "/public/abroadstudy.html" },
-    { "source": "/book.html", "destination": "/public/book.html" },
-    { "source": "/contact.html", "destination": "/public/contact.html" },
-    { "source": "/elderly.html", "destination": "/public/elderly.html" },
-    { "source": "/tradex.html", "destination": "/public/tradex.html" },
-
-    { "source": "/css/(.*)", "destination": "/public/css/$1" },
-    { "source": "/js/(.*)", "destination": "/public/js/$1" },
-    { "source": "/img/(.*)", "destination": "/public/img/$1" }
-  ]
+  "buildCommand": null,
+  "installCommand": null,
+  "functions": {}
 }
