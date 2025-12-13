@@ -1,9 +1,6 @@
 (function () {
-  const notice = document.getElementById("site-notice");
-  const closeBtn = document.getElementById("site-notice-close");
-
-  // If the notice HTML isn't on this page, exit quietly
-  if (!notice || !closeBtn) return;
+  const notice = document.getElementById('site-notice');
+  const closeBtn = document.getElementById('site-notice-close');
 
   function show() {
     notice.hidden = false;
