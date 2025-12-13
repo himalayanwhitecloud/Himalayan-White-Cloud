@@ -287,30 +287,36 @@
 
   // ---------------- AUTH + INITIAL LOAD ----------------
   async function loadProfile() {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "login.html";
-    return;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    // 1) Load latest saved portal state from Cloudflare KV
+    try {
+      const remote = await remoteLoadState();
+      if (remote) applyStateToLocal(remote);
+    } catch (e) {
+      console.warn("Remote load failed:", e.message);
+    }
+
+    // 2) Start UI
+    initDragAndDrop();
+    initMenu();
+    initSearch();
+    initCardModal();
+
+    initLeadStages();
+    initAgreementStages();
+    initInvoiceStages();
+    initClientStages();
+
+    updatePanels();
   }
 
-  // Start portal UI (no server calls)
-  initDragAndDrop();
-  initMenu();
-  initSearch();
-  initCardModal();
-
-  initLeadStages();
-  initAgreementStages();
-  initInvoiceStages();
-  initClientStages();
-
-  updatePanels();
-}
-
-window.addEventListener("DOMContentLoaded", loadProfile);
-
-
-  // ---------------- STAGE & CARD STORAGE ----------------
+  window.addEventListener("DOMContentLoaded", loadProfile);
+// ---------------- STAGE & CARD STORAGE ----------------
 
   function getStageKey(view) {
     switch (view) {
@@ -367,7 +373,8 @@ window.addEventListener("DOMContentLoaded", loadProfile);
     if (!key) return;
     localStorage.setItem(key, JSON.stringify(stages));
 
-    // Sync to Netlify (server-side) so your data persists across devices.
+        scheduleRemoteSave();
+// Sync to Netlify (server-side) so your data persists across devices.
     // Set `portal_token` in localStorage to match your Netlify env var PORTAL_TOKEN.
     remoteSaveState(buildStateFromLocal()).catch(err => console.warn("Remote save skipped:", err.message));
   }
@@ -409,7 +416,8 @@ window.addEventListener("DOMContentLoaded", loadProfile);
     if (!key) return;
     localStorage.setItem(key, JSON.stringify(cards));
 
-    // Sync to Netlify (server-side) so your data persists across devices.
+        scheduleRemoteSave();
+// Sync to Netlify (server-side) so your data persists across devices.
     // Set `portal_token` in localStorage to match your Netlify env var PORTAL_TOKEN.
     remoteSaveState(buildStateFromLocal()).catch(err => console.warn("Remote save skipped:", err.message));
   }
@@ -417,13 +425,8 @@ window.addEventListener("DOMContentLoaded", loadProfile);
 
   // ---------------- SERVER-SIDE SAVE/LOAD (NETLIFY FUNCTIONS) ----------------
   function getPortalAuthHeaders() {
-    // IMPORTANT:
-    // Your Netlify Functions (portal-save / portal-load) check a bearer token against PORTAL_TOKEN.
-    // That token should NOT be hardcoded in your code if the site is public.
-    // For now, you can set it in the browser console:
-    //   localStorage.setItem("portal_token", "YOUR_PORTAL_TOKEN_HERE");
-    const portalToken = localStorage.getItem("portal_token") || "";
-    return portalToken ? { "Authorization": "Bearer " + portalToken } : {};
+    const token = localStorage.getItem("token") || "";
+    return token ? { "Authorization": "Bearer " + token } : {};
   }
 
   async function remoteLoadState() {
@@ -442,7 +445,11 @@ window.addEventListener("DOMContentLoaded", loadProfile);
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.ok) throw new Error(data.message || "Remote save failed");
     return true;
-  }
+  };
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) throw new Error(data.message || "Remote save failed");
+    return true;
+  
 
   function buildStateFromLocal() {
     // Uses your existing localStorage format (stages + cards per view)
