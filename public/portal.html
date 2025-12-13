@@ -262,7 +262,7 @@
 </div>
 
 <script>
-  let draggedCard = null;
+let draggedCard = null;
   let currentView = "lead"; // default tab
   let currentSearch = "";
   let modalState = { view: null, stageIndex: null, cardIndex: null };
@@ -372,11 +372,7 @@
     const key = getStageKey(view);
     if (!key) return;
     localStorage.setItem(key, JSON.stringify(stages));
-
-        scheduleRemoteSave();
-// Sync to Netlify (server-side) so your data persists across devices.
-    // Set `portal_token` in localStorage to match your Netlify env var PORTAL_TOKEN.
-    remoteSaveState(buildStateFromLocal()).catch(err => console.warn("Remote save skipped:", err.message));
+    scheduleRemoteSave();
   }
 
   // cards: array-of-arrays aligned with stages: cards[stageIndex] = [{id,name,email,notes}, ...]
@@ -415,15 +411,10 @@
     const key = getCardKey(view);
     if (!key) return;
     localStorage.setItem(key, JSON.stringify(cards));
-
-        scheduleRemoteSave();
-// Sync to Netlify (server-side) so your data persists across devices.
-    // Set `portal_token` in localStorage to match your Netlify env var PORTAL_TOKEN.
-    remoteSaveState(buildStateFromLocal()).catch(err => console.warn("Remote save skipped:", err.message));
+    scheduleRemoteSave();
   }
 
-
-  // ---------------- SERVER-SIDE SAVE/LOAD (NETLIFY FUNCTIONS) ----------------
+  // ---------------- SERVER-SIDE SAVE/LOAD (Cloudflare Pages Functions + KV) ----------------
   function getPortalAuthHeaders() {
     const token = localStorage.getItem("token") || "";
     return token ? { "Authorization": "Bearer " + token } : {};
@@ -445,14 +436,10 @@
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.ok) throw new Error(data.message || "Remote save failed");
     return true;
-  };
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || !data.ok) throw new Error(data.message || "Remote save failed");
-    return true;
-  
+  }
 
+  // Build/save the whole portal state as one object (all boards)
   function buildStateFromLocal() {
-    // Uses your existing localStorage format (stages + cards per view)
     return {
       stages: {
         lead: getStages("lead"),
@@ -469,18 +456,27 @@
     };
   }
 
+  // Apply remote state into localStorage without triggering saves
   function applyStateToLocal(state) {
     if (!state) return;
-
-    // IMPORTANT: write directly to localStorage so we do NOT re-trigger remoteSaveState during initial load
-    const stageViews = ["lead", "agreement", "invoice", "client"];
-    for (const v of stageViews) {
+    const views = ["lead", "agreement", "invoice", "client"];
+    for (const v of views) {
       const sk = getStageKey(v);
       const ck = getCardKey(v);
-      if (sk && state.stages && state.stages[v]) localStorage.setItem(sk, JSON.stringify(state.stages[v]));
-      if (ck && state.cards && state.cards[v]) localStorage.setItem(ck, JSON.stringify(state.cards[v]));
+      if (sk && state.stages && Array.isArray(state.stages[v])) localStorage.setItem(sk, JSON.stringify(state.stages[v]));
+      if (ck && state.cards && Array.isArray(state.cards[v]))  localStorage.setItem(ck, JSON.stringify(state.cards[v]));
     }
   }
+
+  // Debounced save (prevents saving on every tiny action)
+  let remoteSaveTimer = null;
+  function scheduleRemoteSave() {
+    clearTimeout(remoteSaveTimer);
+    remoteSaveTimer = setTimeout(() => {
+      remoteSaveState(buildStateFromLocal()).catch(err => console.warn("Remote save failed:", err.message));
+    }, 800);
+  }
+
 
   function normalizeCardData(raw) {
     if (!raw) return { id: Date.now(), name: "", email: "", notes: "" };
@@ -990,9 +986,6 @@
 
   
   // ---------------- STARTUP ----------------
-  window.addEventListener("DOMContentLoaded", loadProfile);
-
-
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
