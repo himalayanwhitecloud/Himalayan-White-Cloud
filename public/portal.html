@@ -10,6 +10,15 @@
 <script src="js/reveal.js"></script>
 <script src="js/notify.js"></script>
 
+<script>
+  const token = localStorage.getItem("token");
+  if (token !== "HWC_PORTAL_AUTH_9xA72K") {
+    window.location.href = "login.html";
+  }
+
+  
+</script>
+
 
   <!-- Lightweight modal styles -->
   <style>
@@ -112,6 +121,8 @@
       <img src="img/1.jpg" alt="HWC Logo" class="logo">
       <h2 class="brand-popup-title">Himalayan White Cloud Service</h2>
     </a>
+
+    <button id="logoutBtn" class="btn-primary">Logout</button>
 
     <!-- Main nav links -->
     <nav>
@@ -999,8 +1010,18 @@
     ).element;
   }
 
+  
   // ---------------- STARTUP ----------------
   window.addEventListener("DOMContentLoaded", loadProfile);
+
+
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    });
+  }
 </script>
 
 </body>

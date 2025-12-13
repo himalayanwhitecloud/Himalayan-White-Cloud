@@ -130,9 +130,9 @@
     <!-- Dropdown menu -->
     <div class="menu-panel">
       <a href="../index.html">Home</a>
-      <a href="public/abroadstudy.html">Abroad Study</a>
-      <a href="public/elderly.html">Elderly Care</a>
-      <a href="public/tradex.html">Trade X</a>
+      <a href="abroadstudy.html">Abroad Study</a>
+      <a href="elderly.html">Elderly Care</a>
+      <a href="tradex.html">Trade X</a>
       <a href="about.html">About Us</a>
       <a href="contact.html">Contact Us</a>
       <a href="book.html">Book Consultation</a>
@@ -144,8 +144,8 @@
       <a href="../index.html" class="nav-link">Home</a>
       <a href="abroadstudy.html" class="nav-link">Abroad Study</a>
       <a href="elderly.html" class="nav-link">Elderly Care</a>
-          <a href="tradex.html" class="nav-link">Trade X</a>
-           <a href="about.html" class="nav-link">About Us</a>
+      <a href="tradex.html" class="nav-link">Trade X</a>
+      <a href="about.html" class="nav-link">About Us</a>
       <a href="contact.html" class="nav-link">Contact Us</a>
       <a href="book.html" class="nav-link btn-primary">Book Consultation</a>
       <a href="login.html" class="nav-link btn-primary" aria-current="page">Login</a>
@@ -221,45 +221,29 @@
 </footer>
 
 <script>
-  async function handleLogin(event) {
-    event.preventDefault();
+async function handleLogin(event) {
+  event.preventDefault();
 
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-    if (!email || !password) {
-      alert("Please enter email and password.");
-      return false;
-    }
+  const res = await fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
 
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
+  const data = await res.json();
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        alert(data.message || "Invalid email or password.");
-        return false;
-      }
-
-      // Save JWT token from backend
-      localStorage.setItem("token", data.token);
-
-      alert("Login successful!");
-      // Go to your portal/dashboard page
-      window.location.href = "portal.html";
-      return false;
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong. Please try again.");
-      return false;
-    }
+  if (data.success) {
+    localStorage.setItem("token", data.token);
+    window.location.href = "portal.html";
+  } else {
+    alert("Invalid email or password");
   }
+}
 </script>
+
 
 <!-- Messenger Floating Button -->
 <a
