@@ -1,5 +1,4 @@
 {
   "buildCommand": null,
-  "installCommand": null,
-  "functions": {}
-}
+  "installCommand": null
+  }
