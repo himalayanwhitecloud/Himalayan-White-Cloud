@@ -287,57 +287,28 @@
 
   // ---------------- AUTH + INITIAL LOAD ----------------
   async function loadProfile() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "login.html";
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/profile", {
-        headers: { "Authorization": "Bearer " + token }
-      });
-
-      if (!res.ok) throw new Error("Invalid token");
-
-      const data = await res.json();
-      const emailEl = document.getElementById("userEmail");
-      if (emailEl && data.email) emailEl.textContent = data.email;
-
-      // Try loading saved portal state from Netlify (shared storage).
-      // If it fails (no token / first time), your localStorage defaults will be used.
-      try {
-        const remote = await remoteLoadState();
-        if (remote) {
-          // Write remote data into localStorage, then the normal init/render will use it.
-          applyStateToLocal(remote);
-        }
-      } catch (e) {
-        console.warn("Remote load skipped:", e.message);
-      }
-
-      initDragAndDrop();
-      initMenu();
-      initSearch();
-      initCardModal();
-
-      initLeadStages();
-      initAgreementStages();
-      initInvoiceStages();
-      initClientStages();
-
-      updatePanels();
-    } catch (err) {
-      console.error(err);
-      localStorage.removeItem("token");
-      window.location.href = "login.html";
-    }
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "login.html";
+    return;
   }
 
-  document.getElementById("logoutBtn").addEventListener("click", () => {
-    localStorage.removeItem("token");
-    window.location.href = "login.html";
-  });
+  // Start portal UI (no server calls)
+  initDragAndDrop();
+  initMenu();
+  initSearch();
+  initCardModal();
+
+  initLeadStages();
+  initAgreementStages();
+  initInvoiceStages();
+  initClientStages();
+
+  updatePanels();
+}
+
+window.addEventListener("DOMContentLoaded", loadProfile);
+
 
   // ---------------- STAGE & CARD STORAGE ----------------
 
